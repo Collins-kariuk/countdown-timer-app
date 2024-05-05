@@ -44,36 +44,50 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
+// Defines a composable function that creates the home screen layout.
 fun HomeScreenLayout(onAddEventClicked: () -> Unit) {
+    // Column composable to layout items vertically.
+    // The column fills the maximum size of the parent and applies padding of 16 dp around its
+    // contents.
     Column (
         modifier = Modifier.fillMaxSize().padding(16.dp),
+        // Aligns children horizontally to the center.
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        // Text composable for displaying the app name.
+        // It is styled with specific font size and weight.
         Text(
-            text = "Countdown Timer App",
-            fontSize = 24.sp,
-            fontWeight = FontWeight.Bold,
+            text = "Countdown Timer App", // The text to display, which is the app's name.
+            fontSize = 24.sp, // Sets the size of the font.
+            fontWeight = FontWeight.Bold, // Makes the font bold.
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            textAlign = TextAlign.Center)
+                .fillMaxWidth() // Makes the Text composable fill the maximum width available.
+                .padding(16.dp), // Adds padding around the Text composable.
+            textAlign = TextAlign.Center) // Centers the text within the Text composable.
 
-        Spacer(modifier = Modifier.height(48.dp))
+        // Spacer composable to create empty space between elements, here it is 48 dp tall.
+//        Spacer(modifier = Modifier.height(48.dp))
 
+        // Button composable that users can click to trigger an action.
         Button(
+            // Lambda function that is called when the button is clicked.
             onClick = { onAddEventClicked() },
-            modifier = Modifier.fillMaxWidth().height(50.dp),
-            shape = RoundedCornerShape(8.dp),
-            border = BorderStroke(1.dp, Color.Black)
+            modifier = Modifier
+                .fillMaxWidth() // Makes the Button fill the maximum width available.
+                .height(50.dp), // Sets the height of the Button to 50 dp.
+            shape = RoundedCornerShape(8.dp), // Rounds the corners of the button.
+            border = BorderStroke(1.dp, Color.Black) // Defines a black border around the button.
         ) {
+            // Text inside the Button.
             Text(
-                text = "Add a new event",
-                fontSize = 18.sp,
-                color = Color.Black
+                text = "Add a new event", // Text to display on the button.
+                fontSize = 18.sp, // Font size for the text inside the button.
+                color = Color.Black // Text color.
             )
         }
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable
