@@ -73,7 +73,8 @@ fun HomeScreenLayout(onAddEventClicked: () -> Unit) {
             // Lambda function that is called when the button is clicked.
             onClick = { onAddEventClicked() },
             modifier = Modifier
-                .fillMaxWidth() // Makes the Button fill the maximum width available.
+                // Makes the Button fill half of the maximum width available.
+                .fillMaxWidth(0.5f)
                 .height(50.dp), // Sets the height of the Button to 50 dp.
             shape = RoundedCornerShape(8.dp), // Rounds the corners of the button.
             border = BorderStroke(1.dp, Color.Black) // Defines a black border around the button.
