@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">countdown-timer-app</string>
+    <string name="App_name">Countdown Timer App</string>
+    <string name="New_event_String">Add a new event</string>
 </resources>
