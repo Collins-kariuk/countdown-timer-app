@@ -113,9 +113,9 @@ fun NewEventScreen(onAddEventClicked: () -> Unit) {
         onClick = { onAddEventClicked() },
         // Modifier to control the size and layout of the Button.
         modifier = Modifier
-            // The Button fills 50% of the maximum width of its parent.
-            .fillMaxWidth(0.5f)
-            .height(50.dp), // Sets the height of the Button to 50 density-independent pixels.
+            .size(110.dp) // Makes the button square-shaped by setting equal width and height
+            // Adds padding to position it below the AppBar correctly
+            .padding(start = 8.dp, top = 8.dp),
         // Sets the shape of the Button corners to be rounded with an 8 dp radius.
         shape = RoundedCornerShape(8.dp),
         // Adds a border around the Button with a width of 1 dp and black color.
@@ -125,10 +125,8 @@ fun NewEventScreen(onAddEventClicked: () -> Unit) {
         Text(
             // Sets the text to display on the Button.
             text = stringResource(R.string.New_event_String),
-            // Sets the font size of the text to 18 scalable pixels (sp).
-            fontSize = 18.sp,
-            // Sets the color of the text to black.
-            color = Color.Black
+            fontSize = 18.sp, // Sets the font size of the text to 18 scalable pixels (sp).
+            color = Color.Black // Sets the color of the text to black.
         )
     }
 }
@@ -140,23 +138,16 @@ fun HomeScreenLayout(onAddEventClicked: () -> Unit) {
     Column(
         // Modifier is applied to the Column to adjust its layout parameters.
         modifier = Modifier
-            .fillMaxSize()  // Makes the Column fill the entire available space of its parent.
+            .fillMaxSize() // Makes the Column fill the entire available space of its parent.
             // Adds padding of 16 density-independent pixels around the Column's content.
             .padding(16.dp),
-        // Aligns the children of the Column horizontally to the center.
-        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Includes the AppBar at the top of the Home Screen by calling another composable function.
         HomeScreenAppBar()  // AppBar includes a title and a search icon.
-
-        // Adds a vertical space of 48 density-independent pixels between the AppBar and the next
-        // component.
+        // Adds a vertical space between the AppBar and the next component.
         Spacer(modifier = Modifier.height(48.dp))
-
-        NewEventScreen(onAddEventClicked)
+        NewEventScreen(onAddEventClicked) // New Event button positioned right below the AppBar
     }
 }
-
 
 @Preview(showBackground = true)
 @Composable
