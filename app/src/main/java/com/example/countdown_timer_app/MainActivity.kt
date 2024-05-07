@@ -5,6 +5,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -28,12 +30,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.countdown_timer_app.ui.theme.CountdowntimerappTheme
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,45 +65,44 @@ class MainActivity : ComponentActivity() {
 fun HomeScreenAppBar() {
     // Start a row layout which arranges its children linearly horizontally.
     Row(
-        // Align children vertically to the center of the row.
-        verticalAlignment = Alignment.CenterVertically,
         // Apply modifiers to the Row for layout configurations:
         modifier = Modifier
             .fillMaxWidth()  // Make the Row fill the maximum available width.
-            .padding(16.dp)  // Add padding of 16 density-independent pixels on all sides.
+            // The primary color is the color displayed most frequently across your app’s screens
+            // and components.
+            .background(MaterialTheme.colorScheme.primary)
+            .padding(horizontal = 16.dp, vertical = 8.dp), // Apply padding to the Row.
+        // Align children vertically to the center of the row.
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween // Space children evenly
     ) {
+        Text(
+            text = stringResource(R.string.App_name),
+            style = MaterialTheme.typography.titleLarge, // Apply typography style from Material theme.
+            // Text color for readability on primary background.
+            color = MaterialTheme.colorScheme.onPrimary,
+            // Flex modifier to make the text occupy the remaining space.
+            modifier = Modifier.weight(1f),
+            textAlign = TextAlign.Center // Center the text horizontally within its container.
+        )
 
-        // Define an IconButton, a clickable icon, which users can interact with.
+        Spacer(modifier = Modifier.width(8.dp))  // Adds space between the icon and the text.
+
         IconButton(
             // Set the action to perform when the IconButton is clicked.
             onClick = { /* TODO: Implement search functionality */ },
             // Apply a size modifier to set the height and width of the IconButton.
             modifier = Modifier.size(24.dp)
         ) {
-            // Inside the IconButton, place an Icon.
             Icon(
                 // Use a predefined icon from the material icons set, specifically the search icon.
                 imageVector = Icons.Filled.Search,
                 // Provide a content description for accessibility tools like screen readers.
-                contentDescription = "Search"
+                contentDescription = "Search",
+                // Set the icon color to white for contrast against the blue background.
+                tint = MaterialTheme.colorScheme.onPrimary
             )
         }
-
-        // Insert a horizontal space of 8 density-independent pixels between the search icon and the
-        // text.
-        Spacer(modifier = Modifier.width(8.dp))
-
-        // Add a Text composable to DISPLAY THE APP'S NAME
-        Text(
-            text = "Countdown Timer App", // Set the text to display.
-            fontSize = 24.sp, // Define the font size to be 24 scalable pixels (sp).
-            // Set the font weight to bold, making the text thicker and more prominent.
-            fontWeight = FontWeight.Bold,
-            // Apply a modifier that assigns flex weight to the Text, allowing it to fill remaining
-            // space.
-            modifier = Modifier.weight(1f),
-            textAlign = TextAlign.Center // Center the text horizontally within its container.
-        )
     }
 }
 
@@ -140,7 +143,7 @@ fun HomeScreenLayout(onAddEventClicked: () -> Unit) {
             // Text composable inside the Button to display the button's label.
             Text(
                 // Sets the text to display on the Button.
-                text = "Add a new event",
+                text = stringResource(R.string.New_event_String),
                 // Sets the font size of the text to 18 scalable pixels (sp).
                 fontSize = 18.sp,
                 // Sets the color of the text to black.
