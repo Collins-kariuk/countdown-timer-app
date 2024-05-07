@@ -31,7 +31,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -107,6 +106,34 @@ fun HomeScreenAppBar() {
 }
 
 @Composable
+fun NewEventScreen(onAddEventClicked: () -> Unit) {
+    // Defines a Button composable that users can interact with.
+    Button(
+        // Lambda expression that is executed when the Button is clicked.
+        onClick = { onAddEventClicked() },
+        // Modifier to control the size and layout of the Button.
+        modifier = Modifier
+            // The Button fills 50% of the maximum width of its parent.
+            .fillMaxWidth(0.5f)
+            .height(50.dp), // Sets the height of the Button to 50 density-independent pixels.
+        // Sets the shape of the Button corners to be rounded with an 8 dp radius.
+        shape = RoundedCornerShape(8.dp),
+        // Adds a border around the Button with a width of 1 dp and black color.
+        border = BorderStroke(1.dp, Color.Black)
+    ) {
+        // Text composable inside the Button to display the button's label.
+        Text(
+            // Sets the text to display on the Button.
+            text = stringResource(R.string.New_event_String),
+            // Sets the font size of the text to 18 scalable pixels (sp).
+            fontSize = 18.sp,
+            // Sets the color of the text to black.
+            color = Color.Black
+        )
+    }
+}
+
+@Composable
 // This function constructs the layout for the home screen of the application.
 fun HomeScreenLayout(onAddEventClicked: () -> Unit) {
     // Column composable arranges its children vertically.
@@ -126,30 +153,7 @@ fun HomeScreenLayout(onAddEventClicked: () -> Unit) {
         // component.
         Spacer(modifier = Modifier.height(48.dp))
 
-        // Defines a Button composable that users can interact with.
-        Button(
-            // Lambda expression that is executed when the Button is clicked.
-            onClick = { onAddEventClicked() },
-            // Modifier to control the size and layout of the Button.
-            modifier = Modifier
-                // The Button fills 50% of the maximum width of its parent.
-                .fillMaxWidth(0.5f)
-                .height(50.dp), // Sets the height of the Button to 50 density-independent pixels.
-            // Sets the shape of the Button corners to be rounded with an 8 dp radius.
-            shape = RoundedCornerShape(8.dp),
-            // Adds a border around the Button with a width of 1 dp and black color.
-            border = BorderStroke(1.dp, Color.Black)
-        ) {
-            // Text composable inside the Button to display the button's label.
-            Text(
-                // Sets the text to display on the Button.
-                text = stringResource(R.string.New_event_String),
-                // Sets the font size of the text to 18 scalable pixels (sp).
-                fontSize = 18.sp,
-                // Sets the color of the text to black.
-                color = Color.Black
-            )
-        }
+        NewEventScreen(onAddEventClicked)
     }
 }
 
