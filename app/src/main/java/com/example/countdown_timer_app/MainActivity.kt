@@ -76,7 +76,8 @@ fun HomeScreenAppBar() {
     ) {
         Text(
             text = stringResource(R.string.App_name),
-            style = MaterialTheme.typography.titleLarge, // Apply typography style from Material theme.
+            // Apply typography style from Material theme.
+            style = MaterialTheme.typography.titleLarge,
             // Text color for readability on primary background.
             color = MaterialTheme.colorScheme.onPrimary,
             // Flex modifier to make the text occupy the remaining space.

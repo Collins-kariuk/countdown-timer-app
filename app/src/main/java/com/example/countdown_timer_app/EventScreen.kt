@@ -111,18 +111,18 @@ fun EventDetailScreen(eventTitle: String, eventDate: String, eventNote: String?)
     ) {
         Text(
             text = eventTitle,
-            style = MaterialTheme.typography.h4,
+            style = MaterialTheme.typography.displayLarge,
             color = MaterialTheme.colorScheme.onSurface
         )
         Text(
             text = eventDate,
-            style = MaterialTheme.typography.h6,
+            style = MaterialTheme.typography.headlineMedium,
             color = MaterialTheme.colorScheme.onSurface
         )
         eventNote?.let {
             Text(
                 text = it,
-                style = MaterialTheme.typography.body1,
+                style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurface
             )
         }
@@ -130,9 +130,14 @@ fun EventDetailScreen(eventTitle: String, eventDate: String, eventNote: String?)
 }
 
 @Composable
-fun EventScreenLayout(onShareClicked: () -> Unit, onEditClicked: () -> Unit, onStartClicked: () -> Unit) {
+fun EventScreenLayout(onShareClicked: () -> Unit,
+                      onEditClicked: () -> Unit,
+                      onStartClicked: () -> Unit) {
     Column {
-        EventScreenAppBar(onShareClicked = onShareClicked, onEditClicked = onEditClicked, onStartClicked = onStartClicked)
+        EventScreenAppBar(onShareClicked = onShareClicked,
+            onEditClicked = onEditClicked,
+            onStartClicked = onStartClicked)
+
         EventDetailScreen(
             eventTitle = "Meeting with Team",
             eventDate = "2024-05-15 14:00",
