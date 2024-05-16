@@ -130,6 +130,8 @@ fun EventDetailScreen(eventTitle: String, eventDate: String, eventNote: String?)
                     val minutes = TimeUnit.MILLISECONDS.toMinutes(difference) % 60
                     val seconds = TimeUnit.MILLISECONDS.toSeconds(difference) % 60
 
+                    // Added Locale.getDefault() to the String.format method to specify the locale
+                    // explicitly
                     timeRemaining = String.format(Locale.getDefault(),
                         "%02d Days %02d Hours %02d Minutes %02d Seconds",
                         days, hours, minutes, seconds)
@@ -139,6 +141,8 @@ fun EventDetailScreen(eventTitle: String, eventDate: String, eventNote: String?)
             }
         }
 
+        // Refactored the loop to check the condition in the while loop itself (while (timeRemaining
+        // != "Event has passed")), thus removing the need for break.
         while (timeRemaining != "Event has passed") {
             updateRemainingTime()
             delay(1000L) // Update every second
@@ -163,6 +167,15 @@ fun EventDetailScreen(eventTitle: String, eventDate: String, eventNote: String?)
             style = MaterialTheme.typography.headlineMedium,
             color = MaterialTheme.colorScheme.onSurface
         )
+        // Display the countdown timer
+        Text(
+            text = timeRemaining,
+            style = MaterialTheme.typography.displayMedium,
+            color = MaterialTheme.colorScheme.primary,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(bottom = 16.dp)
+        )
+        // Display the event note, if available
         eventNote?.let {
             Text(
                 text = it,
