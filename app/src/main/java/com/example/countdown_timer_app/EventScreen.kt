@@ -109,10 +109,42 @@ fun EventScreenAppBar(onShareClicked: () -> Unit, onEditClicked: () -> Unit, onS
 
 @Composable
 fun EventDetailScreen(eventTitle: String, eventDate: String, eventNote: String?) {
+    // State to hold the remaining time as a string
+    var timeRemaining by remember { mutableStateOf("") }
+
+    // Function to calculate and update the remaining time
+    LaunchedEffect(Unit) {
+        val dateFormat = SimpleDateFormat("MM/dd/yyyy HH:mm", Locale.getDefault())
+        val eventDateObject = dateFormat.parse(eventDate)
+
+        while (true) {
+            eventDateObject?.let {
+                val currentTime = System.currentTimeMillis()
+                val eventTime = it.time
+                val difference = eventTime - currentTime
+
+                if (difference > 0) {
+                    val days = TimeUnit.MILLISECONDS.toDays(difference)
+                    val hours = TimeUnit.MILLISECONDS.toHours(difference) % 24
+                    val minutes = TimeUnit.MILLISECONDS.toMinutes(difference) % 60
+                    val seconds = TimeUnit.MILLISECONDS.toSeconds(difference) % 60
+
+                    timeRemaining = String.format("%02d Days %02d Hours %02d Minutes %02d Seconds",
+                        days, hours, minutes, seconds)
+                } else {
+                    timeRemaining = "Event has passed"
+                    break
+                }
+            }
+            delay(1000L) // Update every second
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // Display the event title
         Text(
