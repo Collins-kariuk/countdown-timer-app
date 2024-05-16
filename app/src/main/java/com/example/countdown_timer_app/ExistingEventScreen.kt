@@ -35,7 +35,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import com.example.countdown_timer_app.ui.theme.CountdowntimerappTheme
 
-class ExistingEventScreenEventScreen : ComponentActivity() {
+class ExistingEventScreen : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Makes the app content extend into window insets areas like status and navigation bars.
