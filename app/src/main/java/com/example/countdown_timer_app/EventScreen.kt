@@ -27,8 +27,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.runtime.*
+import androidx.compose.ui.text.font.FontWeight
+import kotlinx.coroutines.delay
+import java.text.SimpleDateFormat
+import java.util.*
+import java.util.concurrent.TimeUnit
 import com.example.countdown_timer_app.ui.theme.CountdowntimerappTheme
-import com.google.android.filament.Material
 
 class EventScreen : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -109,11 +114,13 @@ fun EventDetailScreen(eventTitle: String, eventDate: String, eventNote: String?)
             .fillMaxWidth()
             .padding(16.dp)
     ) {
+        // Display the event title
         Text(
             text = eventTitle,
             style = MaterialTheme.typography.displayLarge,
             color = MaterialTheme.colorScheme.onSurface
         )
+        // Display the event date
         Text(
             text = eventDate,
             style = MaterialTheme.typography.headlineMedium,
