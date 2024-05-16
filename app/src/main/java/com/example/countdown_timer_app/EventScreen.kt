@@ -117,7 +117,8 @@ fun EventDetailScreen(eventTitle: String, eventDate: String, eventNote: String?)
         val dateFormat = SimpleDateFormat("MM/dd/yyyy HH:mm", Locale.getDefault())
         val eventDateObject = dateFormat.parse(eventDate)
 
-        while (true) {
+        // Lambda function to update the time remaining
+        val updateRemainingTime: () -> Unit = {
             eventDateObject?.let {
                 val currentTime = System.currentTimeMillis()
                 val eventTime = it.time
@@ -129,13 +130,17 @@ fun EventDetailScreen(eventTitle: String, eventDate: String, eventNote: String?)
                     val minutes = TimeUnit.MILLISECONDS.toMinutes(difference) % 60
                     val seconds = TimeUnit.MILLISECONDS.toSeconds(difference) % 60
 
-                    timeRemaining = String.format("%02d Days %02d Hours %02d Minutes %02d Seconds",
+                    timeRemaining = String.format(Locale.getDefault(),
+                        "%02d Days %02d Hours %02d Minutes %02d Seconds",
                         days, hours, minutes, seconds)
                 } else {
                     timeRemaining = "Event has passed"
-                    break
                 }
             }
+        }
+
+        while (timeRemaining != "Event has passed") {
+            updateRemainingTime()
             delay(1000L) // Update every second
         }
     }
