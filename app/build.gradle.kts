@@ -60,6 +60,7 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     implementation("androidx.compose.material3:material3:1.2.1")
     implementation("com.google.ar.sceneform:filament-android:1.17.1")
+    implementation("androidx.wear.compose:compose-material:1.3.1")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
