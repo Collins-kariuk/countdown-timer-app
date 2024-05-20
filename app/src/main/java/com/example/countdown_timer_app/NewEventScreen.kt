@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.wear.compose.material.ContentAlpha
 import com.example.countdown_timer_app.ui.theme.CountdowntimerappTheme
 
 class NewEventScreen : ComponentActivity() {
@@ -42,7 +43,7 @@ class NewEventScreen : ComponentActivity() {
 }
 
 @Composable
-fun NewEventScreenAppBar() {
+fun NewEventScreenAppBar(onBack: () -> Unit, onStart: () -> Unit, isStartEnabled: Boolean) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -50,10 +51,10 @@ fun NewEventScreenAppBar() {
             .padding(horizontal = 16.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
-    ){
+    ) {
         // Back Icon
         IconButton(
-            onClick = { /*TODO*/ },
+            onClick = onBack,
             modifier = Modifier.size(24.dp)
         ) {
             Icon(
@@ -62,16 +63,17 @@ fun NewEventScreenAppBar() {
                 tint = MaterialTheme.colorScheme.onPrimary
             )
         }
-
-        // The start icon
+        // Start Icon
         IconButton(
-            onClick = { /*TODO*/ },
-            modifier = Modifier.size(24.dp)
+            onClick = onStart,
+            modifier = Modifier.size(24.dp),
+            enabled = isStartEnabled
         ) {
             Icon(
                 imageVector = Icons.Filled.PlayArrow,
                 contentDescription = "Start",
-                tint = MaterialTheme.colorScheme.onPrimary
+                tint = if (isStartEnabled) MaterialTheme.colorScheme.onPrimary
+                       else MaterialTheme.colorScheme.onSurface.copy(alpha = ContentAlpha.disabled)
             )
         }
     }
@@ -79,7 +81,11 @@ fun NewEventScreenAppBar() {
 
 @Composable
 fun NewEventScreenLayout() {
-    NewEventScreenAppBar()
+    NewEventScreenAppBar(
+        onBack = { /* TODO: Implement back functionality */ },
+        onStart = { /* TODO: Implement start functionality */ },
+        isStartEnabled = true
+    )
 }
 
 @Preview(showBackground = true)
