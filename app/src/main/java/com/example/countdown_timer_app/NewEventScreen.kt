@@ -4,6 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.DrawableRes
+import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -16,6 +18,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.wear.compose.material.ContentAlpha
 import com.example.countdown_timer_app.ui.theme.CountdowntimerappTheme
@@ -77,6 +82,53 @@ fun NewEventScreenAppBar(onBack: () -> Unit, onStart: () -> Unit, isStartEnabled
             )
         }
     }
+}
+
+/**
+ * This composable function provides input fields for the user to enter the event details,
+ * including the event name, optional notes, and event location. The location field allows the
+ * user to enter any location, without prompting for a specific place. The notes field is optional
+ * by default.
+ */
+@Composable
+fun EventDetailsInput() {
+    var eventName by remember { mutableStateOf("") }
+    var eventNotes by remember { mutableStateOf("") }
+    var eventLocation by remember { mutableStateOf("") }
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = "Please enter your event details.",
+            modifier = Modifier
+                .padding(bottom = 16.dp, top = 40.dp)
+                .align(alignment = Alignment.Start)
+        )
+
+    }
+}
+
+
+@Composable
+fun EditTextField(
+    label: String,
+    keyboardOptions: KeyboardOptions,
+    value: String,
+    onValueChanged: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    TextField(
+        value = value,
+        singleLine = true,
+        modifier = modifier,
+        onValueChange = onValueChanged,
+        label = { Text(label) },
+        keyboardOptions = keyboardOptions
+    )
 }
 
 @Composable
