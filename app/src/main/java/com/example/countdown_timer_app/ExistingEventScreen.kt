@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Share
@@ -71,13 +72,13 @@ fun EventScreenAppBar(onShareClicked: () -> Unit, onEditClicked: () -> Unit, onS
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ){
-        // Start Icon
+        // Back Icon
         IconButton(
             onClick = onStartClicked,
             modifier = Modifier.size(24.dp)
         ) {
             Icon(
-                imageVector = Icons.Default.PlayArrow, // Assuming a play arrow for "Start"
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                 contentDescription = "Start",
                 tint = MaterialTheme.colorScheme.onPrimary
             )
