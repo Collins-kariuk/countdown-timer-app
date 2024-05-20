@@ -13,13 +13,10 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.wear.compose.material.ContentAlpha
 import com.example.countdown_timer_app.ui.theme.CountdowntimerappTheme
 
 class NewEventScreen : ComponentActivity() {
@@ -44,15 +41,45 @@ class NewEventScreen : ComponentActivity() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewEventScreenAppBar() {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.primary)
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ){
+        // Back Icon
+        IconButton(
+            onClick = { /*TODO*/ },
+            modifier = Modifier.size(24.dp)
+        ) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = "Back",
+                tint = MaterialTheme.colorScheme.onPrimary
+            )
+        }
 
+        // The start icon
+        IconButton(
+            onClick = { /*TODO*/ },
+            modifier = Modifier.size(24.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Filled.PlayArrow,
+                contentDescription = "Start",
+                tint = MaterialTheme.colorScheme.onPrimary
+            )
+        }
+    }
 }
 
 @Composable
 fun NewEventScreenLayout() {
-
+    NewEventScreenAppBar()
 }
 
 @Preview(showBackground = true)
