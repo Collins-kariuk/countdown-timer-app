@@ -4,8 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.annotation.DrawableRes
-import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -19,8 +17,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.wear.compose.material.ContentAlpha
 import com.example.countdown_timer_app.ui.theme.CountdowntimerappTheme
@@ -108,26 +104,25 @@ fun EventDetailsInput() {
                 .padding(bottom = 16.dp, top = 40.dp)
                 .align(alignment = Alignment.Start)
         )
-
     }
 }
-
 
 @Composable
 fun EditTextField(
     label: String,
-    keyboardOptions: KeyboardOptions,
     value: String,
     onValueChanged: (String) -> Unit,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    singleLine: Boolean = true,
     modifier: Modifier = Modifier
 ) {
     TextField(
         value = value,
-        singleLine = true,
-        modifier = modifier,
         onValueChange = onValueChanged,
         label = { Text(label) },
-        keyboardOptions = keyboardOptions
+        singleLine = true,
+        keyboardOptions = keyboardOptions,
+        modifier = modifier,
     )
 }
 
