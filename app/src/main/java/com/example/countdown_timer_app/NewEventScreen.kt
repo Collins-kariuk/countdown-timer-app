@@ -36,7 +36,11 @@ class NewEventScreen : ComponentActivity() {
                         .statusBarsPadding(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    NewEventScreenLayout()
+                    NewEventScreenLayout(
+                        onBack = { /* TODO: Implement back functionality */ },
+                        onStart = { /* TODO: Implement start functionality */ },
+                        isStartEnabled = true
+                    )
                 }
             }
         }
@@ -74,7 +78,7 @@ fun NewEventScreenAppBar(onBack: () -> Unit, onStart: () -> Unit, isStartEnabled
                 imageVector = Icons.Filled.PlayArrow,
                 contentDescription = "Start",
                 tint = if (isStartEnabled) MaterialTheme.colorScheme.onPrimary
-                       else MaterialTheme.colorScheme.onSurface.copy(alpha = ContentAlpha.disabled)
+                else MaterialTheme.colorScheme.onSurface.copy(alpha = ContentAlpha.disabled)
             )
         }
     }
@@ -104,6 +108,30 @@ fun EventDetailsInput() {
                 .padding(bottom = 16.dp, top = 40.dp)
                 .align(alignment = Alignment.Start)
         )
+
+        EditTextField(
+            label = "Event Name",
+            value = eventName,
+            onValueChanged = { eventName = it }
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        EditTextField(
+            label = "Event Location",
+            value = eventLocation,
+            onValueChanged = { eventLocation = it }
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        EditTextField(
+            label = "Event Note (Optional)",
+            value = eventNotes,
+            onValueChanged = { eventNotes = it },
+            singleLine = false,
+            modifier = Modifier.height(100.dp)
+        )
     }
 }
 
@@ -120,25 +148,37 @@ fun EditTextField(
         value = value,
         onValueChange = onValueChanged,
         label = { Text(label) },
-        singleLine = true,
+        singleLine = singleLine,
         keyboardOptions = keyboardOptions,
-        modifier = modifier,
+        modifier = modifier.fillMaxWidth(),
     )
 }
 
 @Composable
-fun NewEventScreenLayout() {
-    NewEventScreenAppBar(
-        onBack = { /* TODO: Implement back functionality */ },
-        onStart = { /* TODO: Implement start functionality */ },
-        isStartEnabled = true
-    )
+fun NewEventScreenLayout(onBack: () -> Unit, onStart: () -> Unit, isStartEnabled: Boolean) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Top
+    ) {
+        NewEventScreenAppBar(onBack, onStart, isStartEnabled)
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        EventDetailsInput()
+    }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun NewEventScreenPreview() {
     CountdowntimerappTheme {
-        NewEventScreenLayout()
+        NewEventScreenLayout(
+            onBack = { /* TODO: Implement back functionality */ },
+            onStart = { /* TODO: Implement start functionality */ },
+            isStartEnabled = true
+        )
     }
 }
