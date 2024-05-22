@@ -187,15 +187,6 @@ fun DateAndTimeInput() {
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     modifier = Modifier.fillMaxWidth()
                 )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Button(
-                    onClick = { /* TODO: Show DatePicker dialog and update selectedDate */ },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("Select Date")
-                }
             }
 
             // Time Picker Section
@@ -207,13 +198,6 @@ fun DateAndTimeInput() {
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     modifier = Modifier.fillMaxWidth()
                 )
-                Spacer(modifier = Modifier.height(8.dp))
-                Button(
-                    onClick = { /* TODO: Show TimePicker dialog and update selectedTime */ },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("Select Time")
-                }
             }
         }
     }
