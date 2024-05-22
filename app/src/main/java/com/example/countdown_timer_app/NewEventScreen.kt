@@ -180,6 +180,11 @@ fun DateAndTimeInput() {
         ) {
             // Date picker selection
             Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = "Please enter the event date:",
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
                 TextField(
                     value = selectedDate,
                     onValueChange = { selectedDate = it },
@@ -189,8 +194,15 @@ fun DateAndTimeInput() {
                 )
             }
 
+            Spacer(modifier = Modifier.width(16.dp))
+
             // Time Picker Section
             Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = "Please enter the event time:",
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.padding(bottom = 8.dp)
+                )
                 TextField(
                     value = selectedTime,
                     onValueChange = { selectedTime = it },
