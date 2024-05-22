@@ -162,12 +162,10 @@ fun EventDetailsInput() {
  * For the date picker, users have two input options:
  * - A text field at the top to manually enter a date in the format MM/DD/YYYY, which only accepts
  *   date inputs.
- * - A button at the bottom that opens a calendar for selecting a date by scrolling.
  *
  * For the time picker, users also have two input options:
  * - A text field at the top to manually enter a time in the format HH:MM, which only accepts time
  *   inputs.
- * - A button at the bottom that opens a clock for selecting a time by scrolling.
  */
 @Composable
 fun DateAndTimeInput() {
