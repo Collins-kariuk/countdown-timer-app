@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.wear.compose.material.ContentAlpha
+import androidx.compose.ui.text.input.KeyboardType
 import com.example.countdown_timer_app.ui.theme.CountdowntimerappTheme
 
 class NewEventScreen : ComponentActivity() {
@@ -84,6 +85,25 @@ fun NewEventScreenAppBar(onBack: () -> Unit, onStart: () -> Unit, isStartEnabled
     }
 }
 
+@Composable
+fun EditTextField(
+    label: String,
+    value: String,
+    onValueChanged: (String) -> Unit,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    singleLine: Boolean = true,
+    modifier: Modifier = Modifier
+) {
+    TextField(
+        value = value,
+        onValueChange = onValueChanged,
+        label = { Text(label) },
+        singleLine = singleLine,
+        keyboardOptions = keyboardOptions,
+        modifier = modifier.fillMaxWidth(),
+    )
+}
+
 /**
  * This composable function provides input fields for the user to enter the event details,
  * including the event name, optional notes, and event location. The location field allows the
@@ -135,23 +155,70 @@ fun EventDetailsInput() {
     }
 }
 
+/**
+ * This composable function provides date and time pickers for the user to select the event's date
+ * and time. The date picker is on the left side, and the time picker is on the right side.
+ *
+ * For the date picker, users have two input options:
+ * - A text field at the top to manually enter a date in the format MM/DD/YYYY, which only accepts
+ *   date inputs.
+ * - A button at the bottom that opens a calendar for selecting a date by scrolling.
+ *
+ * For the time picker, users also have two input options:
+ * - A text field at the top to manually enter a time in the format HH:MM, which only accepts time
+ *   inputs.
+ * - A button at the bottom that opens a clock for selecting a time by scrolling.
+ */
 @Composable
-fun EditTextField(
-    label: String,
-    value: String,
-    onValueChanged: (String) -> Unit,
-    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    singleLine: Boolean = true,
-    modifier: Modifier = Modifier
-) {
-    TextField(
-        value = value,
-        onValueChange = onValueChanged,
-        label = { Text(label) },
-        singleLine = singleLine,
-        keyboardOptions = keyboardOptions,
-        modifier = modifier.fillMaxWidth(),
-    )
+fun DateAndTimeInput() {
+    var selectedDate by remember { mutableStateOf("") }
+    var selectedTime by remember { mutableStateOf("") }
+
+    Column(modifier = Modifier.fillMaxWidth()) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Date picker selection
+            Column(modifier = Modifier.weight(1f)) {
+                TextField(
+                    value = selectedDate,
+                    onValueChange = { selectedDate = it },
+                    label = { Text("MM/DD/YYYY") },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Button(
+                    onClick = { /* TODO: Show DatePicker dialog and update selectedDate */ },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Select Date")
+                }
+            }
+
+            // Time Picker Section
+            Column(modifier = Modifier.weight(1f)) {
+                TextField(
+                    value = selectedTime,
+                    onValueChange = { selectedTime = it },
+                    label = { Text("HH:MM") },
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Button(
+                    onClick = { /* TODO: Show TimePicker dialog and update selectedTime */ },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Select Time")
+                }
+            }
+        }
+    }
 }
 
 @Composable
@@ -168,6 +235,8 @@ fun NewEventScreenLayout(onBack: () -> Unit, onStart: () -> Unit, isStartEnabled
         Spacer(modifier = Modifier.height(16.dp))
 
         EventDetailsInput()
+
+        DateAndTimeInput()
     }
 }
 
