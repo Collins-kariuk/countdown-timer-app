@@ -21,11 +21,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,6 +38,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.countdown_timer_app.ui.theme.CountdowntimerappTheme
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,7 +65,12 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun HomeScreenAppBar() {
+fun HomeScreenAppBar(
+    searchQuery: String,
+    onSearchQueryChange: (String) -> Unit,
+    isSearching: Boolean,
+    onSearchToggle: () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth() // Make the Row fill the maximum available width.
@@ -72,27 +82,45 @@ fun HomeScreenAppBar() {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween // Space children evenly
     ) {
-        Text(
-            text = stringResource(R.string.App_name),
-            style = MaterialTheme.typography.titleLarge, // Apply typography style
-            // Text color for readability on primary background.
-            color = MaterialTheme.colorScheme.onPrimary,
-            // Flex modifier to make the text occupy the remaining space.
-            modifier = Modifier.weight(1f),
-            textAlign = TextAlign.Center // Center the text horizontally within its container.
-        )
+        if (isSearching) {
+            TextField(
+                value = searchQuery,
+                onValueChange = onSearchQueryChange,
+                placeholder = { Text("Search...") },
+                modifier = Modifier.weight(1f),
+                textStyle = MaterialTheme.typography.titleLarge.copy(
+                    color = MaterialTheme.colorScheme.onPrimary
+                ),
+                colors = TextFieldDefaults.colors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    cursorColor = MaterialTheme.colorScheme.onPrimary,
+                    textColor = MaterialTheme.colorScheme.onPrimary,
+                    placeholderColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f)
+                )
+            )
+        } else {
+            Text(
+                text = stringResource(R.string.App_name),
+                style = MaterialTheme.typography.titleLarge, // Apply typography style
+                // Text color for readability on primary background.
+                color = MaterialTheme.colorScheme.onPrimary,
+                // Flex modifier to make the text occupy the remaining space.
+                modifier = Modifier.weight(1f),
+                textAlign = TextAlign.Center // Center the text horizontally within its container.
+            )
+        }
 
-        Spacer(modifier = Modifier.width(8.dp))  // Adds space between the icon and the text.
+        Spacer(modifier = Modifier.width(8.dp)) // Adds space between the icon and the text.
 
         IconButton(
             // Set the action to perform when the IconButton is clicked.
-            onClick = { /* TODO: Implement search functionality */ },
+            onClick = onSearchToggle,
             // Apply a size modifier to set the height and width of the IconButton.
             modifier = Modifier.size(24.dp)
         ) {
             Icon(
-                imageVector = Icons.Filled.Search,
-                contentDescription = "Search",
+                imageVector = if (isSearching) Icons.Filled.Close else Icons.Filled.Search,
+                contentDescription = if (isSearching) "Close" else "Search",
                 // Set the icon color to white for contrast against the blue background.
                 tint = MaterialTheme.colorScheme.onPrimary
             )
