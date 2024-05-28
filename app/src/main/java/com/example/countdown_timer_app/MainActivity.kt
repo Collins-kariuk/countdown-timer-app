@@ -61,11 +61,9 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun HomeScreenAppBar() {
-    // Start a row layout which arranges its children linearly horizontally.
     Row(
-        // Apply modifiers to the Row for layout configurations:
         modifier = Modifier
-            .fillMaxWidth()  // Make the Row fill the maximum available width.
+            .fillMaxWidth() // Make the Row fill the maximum available width.
             // The primary color is the color displayed most frequently across your app’s screens
             // and components.
             .background(MaterialTheme.colorScheme.primary)
@@ -76,8 +74,7 @@ fun HomeScreenAppBar() {
     ) {
         Text(
             text = stringResource(R.string.App_name),
-            // Apply typography style from Material theme.
-            style = MaterialTheme.typography.titleLarge,
+            style = MaterialTheme.typography.titleLarge, // Apply typography style
             // Text color for readability on primary background.
             color = MaterialTheme.colorScheme.onPrimary,
             // Flex modifier to make the text occupy the remaining space.
@@ -94,9 +91,7 @@ fun HomeScreenAppBar() {
             modifier = Modifier.size(24.dp)
         ) {
             Icon(
-                // Use a predefined icon from the material icons set, specifically the search icon.
                 imageVector = Icons.Filled.Search,
-                // Provide a content description for accessibility tools like screen readers.
                 contentDescription = "Search",
                 // Set the icon color to white for contrast against the blue background.
                 tint = MaterialTheme.colorScheme.onPrimary
