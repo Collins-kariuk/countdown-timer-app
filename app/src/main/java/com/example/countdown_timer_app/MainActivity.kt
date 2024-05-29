@@ -43,19 +43,18 @@ import com.example.countdown_timer_app.ui.theme.CountdowntimerappTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Makes the app content extend into window insets areas like status and navigation bars.
+        // Makes the app content extend into window insets areas like status and navigation bars
         enableEdgeToEdge()
         setContent {
             CountdowntimerappTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier
-                        .fillMaxSize() // Fills the maximum size of the parent.
-                        // Adds padding equivalent to the height of the status bar.,
-                        .statusBarsPadding(),
+                        .fillMaxSize() // Fills the maximum size of the parent
+                        .statusBarsPadding(), // Adds padding equal to the height of the status bar
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    HomeScreenLayout( onAddEventClicked = { })
+                    HomeScreenLayout( onAddEventClicked = { } )
                 }
             }
         }
@@ -72,9 +71,9 @@ fun HomeScreenAppBar(
 ) {
     Row(
         modifier = Modifier
-            .fillMaxWidth() // Make the Row fill the maximum available width.
+            .fillMaxWidth() // Make the Row fill the maximum available width
             // The primary color is the color displayed most frequently across your app’s screens
-            // and components.
+            // and components
             .background(MaterialTheme.colorScheme.primary)
             .padding(horizontal = 16.dp, vertical = 8.dp), // Apply padding to the Row.
         // Align children vertically to the center of the row.
@@ -90,7 +89,7 @@ fun HomeScreenAppBar(
                 textStyle = MaterialTheme.typography.titleLarge.copy(
                     color = MaterialTheme.colorScheme.onPrimary
                 ),
-                colors = TextFieldDefaults.textFieldColors( /* TODO: Fix this deprecated function */
+                colors = TextFieldDefaults.textFieldColors(
                     containerColor = MaterialTheme.colorScheme.primary,
                     cursorColor = MaterialTheme.colorScheme.onPrimary
                 )
@@ -99,20 +98,19 @@ fun HomeScreenAppBar(
             Text(
                 text = stringResource(R.string.App_name),
                 style = MaterialTheme.typography.titleLarge, // Apply typography style
-                // Text color for readability on primary background.
+                // Text color for readability on primary background
                 color = MaterialTheme.colorScheme.onPrimary,
-                // Flex modifier to make the text occupy the remaining space.
+                // Flex modifier to make the text occupy the remaining space
                 modifier = Modifier.weight(1f),
-                textAlign = TextAlign.Center // Center the text horizontally within its container.
+                textAlign = TextAlign.Center // Center the text horizontally within its container
             )
         }
 
         Spacer(modifier = Modifier.width(8.dp)) // Adds space between the icon and the text.
 
         IconButton(
-            // Set the action to perform when the IconButton is clicked.
-            onClick = onSearchToggle,
-            // Apply a size modifier to set the height and width of the IconButton.
+            onClick = onSearchToggle, // Set the action to perform when the IconButton is clicked
+            // Apply a size modifier to set the height and width of the IconButton
             modifier = Modifier.size(24.dp)
         ) {
             Icon(
@@ -129,19 +127,16 @@ fun HomeScreenAppBar(
 fun NewEventScreen(onAddEventClicked: () -> Unit) {
     // Defines a Button composable that users can interact with.
     Button(
-        // Lambda expression that is executed when the Button is clicked.
-        onClick = { onAddEventClicked() },
-        // Modifier to control the size and layout of the Button.
+        onClick = { onAddEventClicked() }, // Lambda that is executed when the Button is clicked.
         modifier = Modifier
-            .size(110.dp) // Makes the button square-shaped by setting equal width and height
-            // Adds padding to position it below the AppBar correctly
+            .size(110.dp) // Makes the button square-shaped by setting equal width and height.
+            // Adds padding to position it below the AppBar correctly.
             .padding(start = 8.dp, top = 8.dp),
-        // Sets the shape of the Button corners to be rounded with an 8 dp radius.
-        shape = RoundedCornerShape(8.dp),
+        // Sets the shape of the Button corners to be rounded with a 20 dp radius.
+        shape = RoundedCornerShape(20.dp),
         // Adds a border around the Button with a width of 1 dp and black color.
         border = BorderStroke(1.dp, Color.Black)
     ) {
-        // Text composable inside the Button to display the button's label.
         Text(
             // Sets the text to display on the Button.
             text = stringResource(R.string.New_event_String),
@@ -152,26 +147,38 @@ fun NewEventScreen(onAddEventClicked: () -> Unit) {
 }
 
 @Composable
-// This function constructs the layout for the home screen of the application.
 fun HomeScreenLayout(onAddEventClicked: () -> Unit) {
-    // Column composable arranges its children vertically.
-    Column(
-        // Modifier is applied to the Column to adjust its layout parameters.
-        modifier = Modifier
-            .fillMaxSize() // Makes the Column fill the entire available space of its parent.
-            // Adds padding of 16 density-independent pixels around the Column's content.
-            .padding(16.dp),
-    ) {
-        // AppBar includes a title and a search icon.
-        HomeScreenAppBar(
-            searchQuery = "",
-            onSearchQueryChange = {},
-            isSearching = false,
-            onSearchToggle = {}
-        )
-        // Adds a vertical space between the AppBar and the next component.
-        Spacer(modifier = Modifier.height(48.dp))
-        NewEventScreen(onAddEventClicked) // New Event button positioned right below the AppBar
+    // Scaffold composable provides a layout structure with a top bar and a content area.
+    Scaffold(
+        topBar = {
+            HomeScreenAppBar(
+                searchQuery = "",
+                onSearchQueryChange = {},
+                isSearching = false,
+                onSearchToggle = {}
+            )
+        }
+    ) { innerPadding ->
+        // Surface composable provides a background for the app's content area.
+        Surface(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .background(MaterialTheme.colorScheme.tertiaryContainer),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                // Adds a vertical space between the AppBar and the next component.
+                Spacer(modifier = Modifier.height(48.dp))
+                NewEventScreen(onAddEventClicked)
+            }
+        }
     }
 }
 
