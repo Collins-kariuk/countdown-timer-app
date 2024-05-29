@@ -37,10 +37,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.countdown_timer_app.ui.theme.CountdowntimerappTheme
-import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import com.example.countdown_timer_app.ui.theme.CountdowntimerappTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -64,6 +62,7 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreenAppBar(
     searchQuery: String,
@@ -91,11 +90,9 @@ fun HomeScreenAppBar(
                 textStyle = MaterialTheme.typography.titleLarge.copy(
                     color = MaterialTheme.colorScheme.onPrimary
                 ),
-                colors = TextFieldDefaults.colors(
+                colors = TextFieldDefaults.textFieldColors( /* TODO: Fix this deprecated function */
                     containerColor = MaterialTheme.colorScheme.primary,
-                    cursorColor = MaterialTheme.colorScheme.onPrimary,
-                    textColor = MaterialTheme.colorScheme.onPrimary,
-                    placeholderColor = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.5f)
+                    cursorColor = MaterialTheme.colorScheme.onPrimary
                 )
             )
         } else {
@@ -165,7 +162,13 @@ fun HomeScreenLayout(onAddEventClicked: () -> Unit) {
             // Adds padding of 16 density-independent pixels around the Column's content.
             .padding(16.dp),
     ) {
-        HomeScreenAppBar()  // AppBar includes a title and a search icon.
+        // AppBar includes a title and a search icon.
+        HomeScreenAppBar(
+            searchQuery = "",
+            onSearchQueryChange = {},
+            isSearching = false,
+            onSearchToggle = {}
+        )
         // Adds a vertical space between the AppBar and the next component.
         Spacer(modifier = Modifier.height(48.dp))
         NewEventScreen(onAddEventClicked) // New Event button positioned right below the AppBar
