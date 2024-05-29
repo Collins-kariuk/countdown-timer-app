@@ -172,11 +172,12 @@ fun HomeScreenLayout(onAddEventClicked: () -> Unit) {
                     .fillMaxSize()
                     .padding(16.dp),
                 verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.Start // Align content to the start horizontally.
             ) {
-                // Adds a vertical space between the AppBar and the next component.
-                Spacer(modifier = Modifier.height(48.dp))
+                // New Event button positioned right below the AppBar at the top left.
                 NewEventScreen(onAddEventClicked)
+                // Adds space between button & other content.
+                Spacer(modifier = Modifier.height(48.dp))
             }
         }
     }
