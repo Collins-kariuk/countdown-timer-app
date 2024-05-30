@@ -148,8 +148,7 @@ fun NewEventButton(onAddEventClicked: () -> Unit) {
     Button(
         onClick = { onAddEventClicked() }, // Lambda that's executed when the Button is clicked
         modifier = Modifier
-            .width(150.dp) // Makes the button wider
-            .height(50.dp) // Sets the height of the button
+            .size(110.dp)
             // Adds padding to position it below the AppBar correctly
             .padding(start = 8.dp, top = 8.dp),
         // Sets the shape of the Button corners to be rounded with a 20 dp radius
