@@ -62,12 +62,13 @@ class MainActivity : ComponentActivity() {
                         .statusBarsPadding(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    HomeScreen(
+                    HomeScreenLayout(
                         events = events,
                         searchQuery = searchQuery,
                         onSearchQueryChange = { searchQuery = it },
                         isSearching = isSearching,
-                        onSearchToggle = { isSearching = !isSearching }
+                        onSearchToggle = { isSearching = !isSearching },
+                        onAddEventClicked = { /* TODO: Implement add event functionality */ }
                     )
                 }
             }
@@ -142,12 +143,13 @@ fun HomeScreenAppBar(
 }
 
 @Composable
-fun NewEventScreen(onAddEventClicked: () -> Unit) {
+fun NewEventButton(onAddEventClicked: () -> Unit) {
     // Defines clickable button to add new event
     Button(
         onClick = { onAddEventClicked() }, // Lambda that's executed when the Button is clicked
         modifier = Modifier
-            .size(110.dp) // Makes the button square-shaped by setting equal width and height
+            .width(150.dp) // Makes the button wider
+            .height(50.dp) // Sets the height of the button
             // Adds padding to position it below the AppBar correctly
             .padding(start = 8.dp, top = 8.dp),
         // Sets the shape of the Button corners to be rounded with a 20 dp radius
