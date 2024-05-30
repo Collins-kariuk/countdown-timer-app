@@ -167,15 +167,22 @@ fun NewEventButton(onAddEventClicked: () -> Unit) {
 }
 
 @Composable
-fun HomeScreenLayout(onAddEventClicked: () -> Unit) {
+fun HomeScreenLayout(
+    events: List<Event>,
+    searchQuery: String,
+    onSearchQueryChange: (String) -> Unit,
+    isSearching: Boolean,
+    onSearchToggle: () -> Unit,
+    onAddEventClicked: () -> Unit
+) {
     // Scaffold composable provides a layout structure with a top bar and a content area
     Scaffold(
         topBar = {
             HomeScreenAppBar(
-                searchQuery = "",
-                onSearchQueryChange = {},
-                isSearching = false,
-                onSearchToggle = {}
+                searchQuery = searchQuery,
+                onSearchQueryChange = onSearchQueryChange,
+                isSearching = isSearching,
+                onSearchToggle = onSearchToggle
             )
         }
     ) { innerPadding ->
@@ -196,41 +203,23 @@ fun HomeScreenLayout(onAddEventClicked: () -> Unit) {
                 horizontalAlignment = Alignment.Start
             ) {
                 // New Event button positioned right below the AppBar at the top left
-                NewEventScreen(onAddEventClicked)
+                NewEventButton(onAddEventClicked)
                 // Adds space between button & other content
-                Spacer(modifier = Modifier.height(48.dp))
+                Spacer(modifier = Modifier.height(16.dp))
+
+                val filteredEvents = if (isSearching) {
+                    events.filter { it.name.contains(searchQuery, ignoreCase = true) }
+                } else {
+                    events
+                }
+
+                EventList(events = filteredEvents)
             }
         }
     }
 }
 
 data class Event(val name: String)
-
-@Composable
-fun HomeScreen(
-    events: List<Event>, // List of events
-    searchQuery: String, // Current search query
-    onSearchQueryChange: (String) -> Unit, // Callback to update search query
-    isSearching: Boolean, // Flag to determine if search mode is active
-    onSearchToggle: () -> Unit // Callback to toggle search mode
-) {
-    Column {
-        HomeScreenAppBar(
-            searchQuery = searchQuery,
-            onSearchQueryChange = onSearchQueryChange,
-            isSearching = isSearching,
-            onSearchToggle = onSearchToggle
-        )
-
-        val filteredEvents = if (isSearching) {
-            events.filter { it.name.contains(searchQuery, ignoreCase = true) }
-        } else {
-            events
-        }
-
-        EventList(events = filteredEvents)
-    }
-}
 
 @Composable
 fun EventList(events: List<Event>) {
@@ -261,12 +250,13 @@ fun HomeScreenPreview() {
     var isSearching by remember { mutableStateOf(false) }
 
     CountdowntimerappTheme {
-        HomeScreen(
+        HomeScreenLayout(
             events = sampleEvents,
             searchQuery = searchQuery,
             onSearchQueryChange = { searchQuery = it },
             isSearching = isSearching,
-            onSearchToggle = { isSearching = !isSearching }
+            onSearchToggle = { isSearching = !isSearching },
+            onAddEventClicked = { /* TODO: Implement add event functionality */ }
         )
     }
 }
