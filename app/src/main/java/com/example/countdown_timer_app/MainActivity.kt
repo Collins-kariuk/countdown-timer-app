@@ -49,18 +49,26 @@ import com.example.countdown_timer_app.ui.theme.CountdowntimerappTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Makes the app content extend into window insets areas like status and navigation bars
         enableEdgeToEdge()
         setContent {
             CountdowntimerappTheme {
-                // A surface container using the 'background' color from the theme
+                val events by remember { mutableStateOf(listOf<Event>()) }
+                var searchQuery by remember { mutableStateOf("") }
+                var isSearching by remember { mutableStateOf(false) }
+
                 Surface(
                     modifier = Modifier
-                        .fillMaxSize() // Fills the maximum size of the parent
-                        .statusBarsPadding(), // Adds padding equal to the height of the status bar
+                        .fillMaxSize()
+                        .statusBarsPadding(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    HomeScreenLayout( onAddEventClicked = { } )
+                    HomeScreen(
+                        events = events,
+                        searchQuery = searchQuery,
+                        onSearchQueryChange = { searchQuery = it },
+                        isSearching = isSearching,
+                        onSearchToggle = { isSearching = !isSearching }
+                    )
                 }
             }
         }
@@ -194,39 +202,48 @@ fun HomeScreenLayout(onAddEventClicked: () -> Unit) {
     }
 }
 
-@Composable
-fun EventList(events: List<Event>) {
-    LazyColumn {
-        items(events) { event ->
-            Text(event.name)
-        }
-    }
-}
+data class Event(val name: String)
 
 @Composable
-fun HomeScreen(events: List<Event>) {
-    var searchQuery by remember { mutableStateOf("") }
-    var isSearching by remember { mutableStateOf(false) }
-
-    val filteredEvents = if (isSearching) {
-        events.filter { it.name.contains(searchQuery, ignoreCase = true) }
-    } else {
-        events
-    }
-
+fun HomeScreen(
+    events: List<Event>, // List of events
+    searchQuery: String, // Current search query
+    onSearchQueryChange: (String) -> Unit, // Callback to update search query
+    isSearching: Boolean, // Flag to determine if search mode is active
+    onSearchToggle: () -> Unit // Callback to toggle search mode
+) {
     Column {
         HomeScreenAppBar(
             searchQuery = searchQuery,
-            onSearchQueryChange = { searchQuery = it },
+            onSearchQueryChange = onSearchQueryChange,
             isSearching = isSearching,
-            onSearchToggle = { isSearching = !isSearching }
+            onSearchToggle = onSearchToggle
         )
+
+        val filteredEvents = if (isSearching) {
+            events.filter { it.name.contains(searchQuery, ignoreCase = true) }
+        } else {
+            events
+        }
 
         EventList(events = filteredEvents)
     }
 }
 
-data class Event(val name: String)
+@Composable
+fun EventList(events: List<Event>) {
+    LazyColumn {
+        items(events) { event ->
+            Text(
+                text = event.name,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                style = MaterialTheme.typography.bodyLarge
+            )
+        }
+    }
+}
 
 @Preview(showBackground = true)
 @Composable
@@ -238,15 +255,16 @@ fun HomeScreenPreview() {
         Event("Meeting")
     )
 
-    MaterialTheme {
-        HomeScreen(events = sampleEvents)
+    var searchQuery by remember { mutableStateOf("") }
+    var isSearching by remember { mutableStateOf(false) }
+
+    CountdowntimerappTheme {
+        HomeScreen(
+            events = sampleEvents,
+            searchQuery = searchQuery,
+            onSearchQueryChange = { searchQuery = it },
+            isSearching = isSearching,
+            onSearchToggle = { isSearching = !isSearching }
+        )
     }
 }
-
-//@Preview(showBackground = true)
-//@Composable
-//fun GreetingPreview() {
-//    CountdowntimerappTheme {
-//        HomeScreenLayout(onAddEventClicked = { })
-//    }
-//}
