@@ -64,29 +64,31 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreenAppBar(
-    searchQuery: String,
-    onSearchQueryChange: (String) -> Unit,
-    isSearching: Boolean,
-    onSearchToggle: () -> Unit
+    searchQuery: String, // Current search query text.
+    onSearchQueryChange: (String) -> Unit, // Callback to update the search query text.
+    isSearching: Boolean, // Flag to determine if the user is in search mode.
+    onSearchToggle: () -> Unit // Callback to toggle the search mode.
 ) {
     Row(
         modifier = Modifier
-            .fillMaxWidth() // Make the Row fill the maximum available width
-            // The primary color is the color displayed most frequently across your app’s screens
-            // and components
+            .fillMaxWidth() // Make the Row fill the maximum available width.
+            // Set background color to primary color of the theme.
             .background(MaterialTheme.colorScheme.primary)
-            .padding(horizontal = 16.dp, vertical = 8.dp), // Apply padding to the Row.
+            // Apply horizontal and vertical padding to the Row.
+            .padding(horizontal = 16.dp, vertical = 8.dp),
         // Align children vertically to the center of the row.
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween // Space children evenly
+        horizontalArrangement = Arrangement.SpaceBetween // Space children evenly within the Row.
     ) {
-        if (isSearching) {
+        if (isSearching) { // Check if the user is in search mode.
             TextField(
-                value = searchQuery,
-                onValueChange = onSearchQueryChange,
+                value = searchQuery, // Set the current value of the TextField to the search query.
+                onValueChange = onSearchQueryChange, // Update search query when the text changes.
+                // Placeholder text when TextField is empty.
                 placeholder = { Text("Search...") },
-                modifier = Modifier.weight(1f),
+                modifier = Modifier.weight(1f), // Make TextField take up remaining space in Row.
                 textStyle = MaterialTheme.typography.titleLarge.copy(
+                    // Set the text color to be readable on the primary background.
                     color = MaterialTheme.colorScheme.onPrimary
                 ),
                 colors = TextFieldDefaults.textFieldColors(
@@ -96,27 +98,29 @@ fun HomeScreenAppBar(
             )
         } else {
             Text(
-                text = stringResource(R.string.App_name),
-                style = MaterialTheme.typography.titleLarge, // Apply typography style
-                // Text color for readability on primary background
+                text = stringResource(R.string.App_name), // Display the app name text.
+                style = MaterialTheme.typography.titleLarge, // Apply typography style to the text.
+                // Set the text color for readability on the primary background.
                 color = MaterialTheme.colorScheme.onPrimary,
-                // Flex modifier to make the text occupy the remaining space
+                // Make the text take up the remaining space in the Row.
                 modifier = Modifier.weight(1f),
-                textAlign = TextAlign.Center // Center the text horizontally within its container
+                textAlign = TextAlign.Center // Center the text horizontally within its container.
             )
         }
 
-        Spacer(modifier = Modifier.width(8.dp)) // Adds space between the icon and the text.
+        Spacer(modifier = Modifier.width(8.dp)) // Adds space between the text and the icon.
 
         IconButton(
-            onClick = onSearchToggle, // Set the action to perform when the IconButton is clicked
-            // Apply a size modifier to set the height and width of the IconButton
+            onClick = onSearchToggle, // Set action to perform when the search button is clicked.
+            // Apply a size modifier to set the height and width of the IconButton.
             modifier = Modifier.size(24.dp)
         ) {
             Icon(
+                // Change icon based on search mode.
                 imageVector = if (isSearching) Icons.Filled.Close else Icons.Filled.Search,
+                // Set content description for accessibility.
                 contentDescription = if (isSearching) "Close" else "Search",
-                // Set the icon color to white for contrast against the blue background.
+                // Set the icon color for contrast against the primary background.
                 tint = MaterialTheme.colorScheme.onPrimary
             )
         }
@@ -125,30 +129,30 @@ fun HomeScreenAppBar(
 
 @Composable
 fun NewEventScreen(onAddEventClicked: () -> Unit) {
-    // Defines a Button composable that users can interact with.
+    // Defines clickable button to add new event
     Button(
-        onClick = { onAddEventClicked() }, // Lambda that is executed when the Button is clicked.
+        onClick = { onAddEventClicked() }, // Lambda that's executed when the Button is clicked
         modifier = Modifier
-            .size(110.dp) // Makes the button square-shaped by setting equal width and height.
-            // Adds padding to position it below the AppBar correctly.
+            .size(110.dp) // Makes the button square-shaped by setting equal width and height
+            // Adds padding to position it below the AppBar correctly
             .padding(start = 8.dp, top = 8.dp),
-        // Sets the shape of the Button corners to be rounded with a 20 dp radius.
+        // Sets the shape of the Button corners to be rounded with a 20 dp radius
         shape = RoundedCornerShape(20.dp),
-        // Adds a border around the Button with a width of 1 dp and black color.
+        // Adds a border around the Button with a width of 1 dp and black color
         border = BorderStroke(1.dp, Color.Black)
     ) {
         Text(
-            // Sets the text to display on the Button.
+            // Sets the text to display on the Button
             text = stringResource(R.string.New_event_String),
-            fontSize = 18.sp, // Sets the font size of the text to 18 scalable pixels (sp).
-            color = Color.Black // Sets the color of the text to black.
+            fontSize = 18.sp, // Sets the font size of the text to 18 scalable pixels (sp)
+            color = Color.Black // Sets the color of the text to black
         )
     }
 }
 
 @Composable
 fun HomeScreenLayout(onAddEventClicked: () -> Unit) {
-    // Scaffold composable provides a layout structure with a top bar and a content area.
+    // Scaffold composable provides a layout structure with a top bar and a content area
     Scaffold(
         topBar = {
             HomeScreenAppBar(
@@ -159,7 +163,7 @@ fun HomeScreenLayout(onAddEventClicked: () -> Unit) {
             )
         }
     ) { innerPadding ->
-        // Surface composable provides a background for the app's content area.
+        // Surface composable provides a background for the app's content area
         Surface(
             modifier = Modifier
                 .fillMaxSize()
@@ -171,12 +175,13 @@ fun HomeScreenLayout(onAddEventClicked: () -> Unit) {
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(16.dp),
+                // Aligns content to the start horizontally and top vertically
                 verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.Start // Align content to the start horizontally.
+                horizontalAlignment = Alignment.Start
             ) {
-                // New Event button positioned right below the AppBar at the top left.
+                // New Event button positioned right below the AppBar at the top left
                 NewEventScreen(onAddEventClicked)
-                // Adds space between button & other content.
+                // Adds space between button & other content
                 Spacer(modifier = Modifier.height(48.dp))
             }
         }
