@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
@@ -38,6 +40,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.material3.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import com.example.countdown_timer_app.ui.theme.CountdowntimerappTheme
 
 class MainActivity : ComponentActivity() {
@@ -188,10 +194,59 @@ fun HomeScreenLayout(onAddEventClicked: () -> Unit) {
     }
 }
 
-@Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
-    CountdowntimerappTheme {
-        HomeScreenLayout(onAddEventClicked = { })
+fun EventList(events: List<Event>) {
+    LazyColumn {
+        items(events) { event ->
+            Text(event.name)
+        }
     }
 }
+
+@Composable
+fun HomeScreen(events: List<Event>) {
+    var searchQuery by remember { mutableStateOf("") }
+    var isSearching by remember { mutableStateOf(false) }
+
+    val filteredEvents = if (isSearching) {
+        events.filter { it.name.contains(searchQuery, ignoreCase = true) }
+    } else {
+        events
+    }
+
+    Column {
+        HomeScreenAppBar(
+            searchQuery = searchQuery,
+            onSearchQueryChange = { searchQuery = it },
+            isSearching = isSearching,
+            onSearchToggle = { isSearching = !isSearching }
+        )
+
+        EventList(events = filteredEvents)
+    }
+}
+
+data class Event(val name: String)
+
+@Preview(showBackground = true)
+@Composable
+fun HomeScreenPreview() {
+    val sampleEvents = listOf(
+        Event("Birthday Party"),
+        Event("Conference"),
+        Event("Wedding"),
+        Event("Meeting")
+    )
+
+    MaterialTheme {
+        HomeScreen(events = sampleEvents)
+    }
+}
+
+//@Preview(showBackground = true)
+//@Composable
+//fun GreetingPreview() {
+//    CountdowntimerappTheme {
+//        HomeScreenLayout(onAddEventClicked = { })
+//    }
+//}
