@@ -63,7 +63,6 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     HomeScreenLayout(
-//                        events = events,
                         searchQuery = searchQuery,
                         onSearchQueryChange = { searchQuery = it },
                         isSearching = isSearching,
@@ -166,7 +165,6 @@ fun NewEventButton(onAddEventClicked: () -> Unit) {
 
 @Composable
 fun HomeScreenLayout(
-//    events: List<Event>,
     searchQuery: String,
     onSearchQueryChange: (String) -> Unit,
     isSearching: Boolean,
@@ -204,14 +202,6 @@ fun HomeScreenLayout(
                 NewEventButton(onAddEventClicked)
                 // Adds space between button & other content
                 Spacer(modifier = Modifier.height(16.dp))
-
-//                val filteredEvents = if (isSearching) {
-//                    events.filter { it.name.contains(searchQuery, ignoreCase = true) }
-//                } else {
-//                    events
-//                }
-
-//                EventList(events = filteredEvents)
             }
         }
     }
@@ -237,19 +227,11 @@ fun EventList(events: List<Event>) {
 @Preview(showBackground = true)
 @Composable
 fun HomeScreenPreview() {
-//    val sampleEvents = listOf(
-//        Event("Birthday Party"),
-//        Event("Conference"),
-//        Event("Wedding"),
-//        Event("Meeting")
-//    )
-
     var searchQuery by remember { mutableStateOf("") }
     var isSearching by remember { mutableStateOf(false) }
 
     CountdowntimerappTheme {
         HomeScreenLayout(
-//            events = sampleEvents,
             searchQuery = searchQuery,
             onSearchQueryChange = { searchQuery = it },
             isSearching = isSearching,
