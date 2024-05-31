@@ -44,6 +44,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.countdown_timer_app.ui.theme.CountdowntimerappTheme
 
 class MainActivity : ComponentActivity() {
@@ -52,9 +55,9 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             CountdowntimerappTheme {
-                val events by remember { mutableStateOf(listOf<Event>()) }
                 var searchQuery by remember { mutableStateOf("") }
                 var isSearching by remember { mutableStateOf(false) }
+                val navController = rememberNavController()
 
                 Surface(
                     modifier = Modifier
@@ -62,13 +65,24 @@ class MainActivity : ComponentActivity() {
                         .statusBarsPadding(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    HomeScreenLayout(
-                        searchQuery = searchQuery,
-                        onSearchQueryChange = { searchQuery = it },
-                        isSearching = isSearching,
-                        onSearchToggle = { isSearching = !isSearching },
-                        onAddEventClicked = { /* TODO: Implement add event functionality */ }
-                    )
+                    NavHost(navController = navController, startDestination = "home") {
+                        composable("home") {
+                            HomeScreenLayout(
+                                searchQuery = searchQuery,
+                                onSearchQueryChange = { searchQuery = it },
+                                isSearching = isSearching,
+                                onSearchToggle = { isSearching = !isSearching },
+                                onAddEventClicked = { navController.navigate("new_event") }
+                            )
+                        }
+                        composable("new_event") {
+                            NewEventScreenLayout(
+                                onBack = { navController.popBackStack() },
+                                onStart = { /* TODO: Implement start functionality */ },
+                                isStartEnabled = true
+                            )
+                        }
+                    }
                 }
             }
         }
