@@ -221,20 +221,36 @@ fun NewEventScreenLayout(
     onStart: () -> Unit,
     isStartEnabled: Boolean
 ) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
-    ) {
-        NewEventScreenAppBar(onBack, onStart, isStartEnabled)
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        EventDetailsInput()
-
-        DateAndTimeInput()
+    // Scaffold composable provides a layout structure with a top bar and a content area
+    Scaffold(
+        topBar = {
+            NewEventScreenAppBar(
+                onBack = onBack,
+                onStart = onStart,
+                isStartEnabled = isStartEnabled
+            )
+        }
+    ) { innerPadding ->
+        // Surface composable provides a background for the app's content area
+        Surface(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .background(MaterialTheme.colorScheme.tertiaryContainer),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                // Aligns content to the start horizontally and top vertically
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.Start
+            ) {
+                EventDetailsInput()
+                DateAndTimeInput()
+            }
+        }
     }
 }
 
