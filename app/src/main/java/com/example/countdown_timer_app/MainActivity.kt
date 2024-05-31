@@ -63,7 +63,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     HomeScreenLayout(
-                        events = events,
+//                        events = events,
                         searchQuery = searchQuery,
                         onSearchQueryChange = { searchQuery = it },
                         isSearching = isSearching,
@@ -149,8 +149,7 @@ fun NewEventButton(onAddEventClicked: () -> Unit) {
         onClick = { onAddEventClicked() }, // Lambda that's executed when the Button is clicked
         modifier = Modifier
             .size(110.dp)
-            // Adds padding to position it below the AppBar correctly
-            .padding(start = 8.dp, top = 8.dp),
+            .padding(start = 8.dp, top = 8.dp), // Position button below the AppBar correctly
         // Sets the shape of the Button corners to be rounded with a 20 dp radius
         shape = RoundedCornerShape(20.dp),
         // Adds a border around the Button with a width of 1 dp and black color
@@ -167,7 +166,7 @@ fun NewEventButton(onAddEventClicked: () -> Unit) {
 
 @Composable
 fun HomeScreenLayout(
-    events: List<Event>,
+//    events: List<Event>,
     searchQuery: String,
     onSearchQueryChange: (String) -> Unit,
     isSearching: Boolean,
@@ -206,13 +205,13 @@ fun HomeScreenLayout(
                 // Adds space between button & other content
                 Spacer(modifier = Modifier.height(16.dp))
 
-                val filteredEvents = if (isSearching) {
-                    events.filter { it.name.contains(searchQuery, ignoreCase = true) }
-                } else {
-                    events
-                }
+//                val filteredEvents = if (isSearching) {
+//                    events.filter { it.name.contains(searchQuery, ignoreCase = true) }
+//                } else {
+//                    events
+//                }
 
-                EventList(events = filteredEvents)
+//                EventList(events = filteredEvents)
             }
         }
     }
@@ -238,19 +237,19 @@ fun EventList(events: List<Event>) {
 @Preview(showBackground = true)
 @Composable
 fun HomeScreenPreview() {
-    val sampleEvents = listOf(
-        Event("Birthday Party"),
-        Event("Conference"),
-        Event("Wedding"),
-        Event("Meeting")
-    )
+//    val sampleEvents = listOf(
+//        Event("Birthday Party"),
+//        Event("Conference"),
+//        Event("Wedding"),
+//        Event("Meeting")
+//    )
 
     var searchQuery by remember { mutableStateOf("") }
     var isSearching by remember { mutableStateOf(false) }
 
     CountdowntimerappTheme {
         HomeScreenLayout(
-            events = sampleEvents,
+//            events = sampleEvents,
             searchQuery = searchQuery,
             onSearchQueryChange = { searchQuery = it },
             isSearching = isSearching,
