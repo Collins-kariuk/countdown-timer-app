@@ -55,31 +55,41 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             CountdowntimerappTheme {
+                // Declare a mutable state for the search query text.
                 var searchQuery by remember { mutableStateOf("") }
+                // Declare a mutable state to determine if the user is in search mode.
                 var isSearching by remember { mutableStateOf(false) }
+                // Create a NavController for navigation between composables.
                 val navController = rememberNavController()
 
                 Surface(
                     modifier = Modifier
-                        .fillMaxSize()
-                        .statusBarsPadding(),
-                    color = MaterialTheme.colorScheme.background
+                        .fillMaxSize() // Make the Surface fill the maximum size of the parent.
+                        .statusBarsPadding(), // Add padding equivalent to height of the status bar.
+                    color = MaterialTheme.colorScheme.background // Set the background color.
                 ) {
+                    // Define a NavHost to manage navigation between composables.
                     NavHost(navController = navController, startDestination = "home") {
+                        // Define the "home" composable destination.
                         composable("home") {
+                            // Display home screen layout with search & event adding functionalities
                             HomeScreenLayout(
                                 searchQuery = searchQuery,
                                 onSearchQueryChange = { searchQuery = it },
                                 isSearching = isSearching,
                                 onSearchToggle = { isSearching = !isSearching },
+                                // Navigate to "new_event" screen when the add event button is clicked.
                                 onAddEventClicked = { navController.navigate("new_event") }
                             )
                         }
+                        // Define the "new_event" composable destination.
                         composable("new_event") {
+                            // Display new event screen layout with back and start functionalities.
                             NewEventScreenLayout(
+                                // Navigate back to the previous screen ("home")
                                 onBack = { navController.popBackStack() },
                                 onStart = { /* TODO: Implement start functionality */ },
-                                isStartEnabled = true
+                                isStartEnabled = true // Enable the start button.
                             )
                         }
                     }
