@@ -116,7 +116,9 @@ fun EventDetailScreen(eventTitle: String, eventDate: String, eventNote: String?)
 
     // Function to calculate and update the remaining time
     LaunchedEffect(Unit) {
+        // Format for the date and time input
         val dateFormat = SimpleDateFormat("MM/dd/yyyy HH:mm", Locale.getDefault())
+        // Parse the event date string into a Date object
         val eventDateObject = dateFormat.parse(eventDate)
 
         // Lambda function to update the time remaining
@@ -127,13 +129,13 @@ fun EventDetailScreen(eventTitle: String, eventDate: String, eventNote: String?)
                 val difference = eventTime - currentTime
 
                 if (difference > 0) {
+                    // Calculate days, hours, minutes, and seconds remaining
                     val days = TimeUnit.MILLISECONDS.toDays(difference)
                     val hours = TimeUnit.MILLISECONDS.toHours(difference) % 24
                     val minutes = TimeUnit.MILLISECONDS.toMinutes(difference) % 60
                     val seconds = TimeUnit.MILLISECONDS.toSeconds(difference) % 60
 
-                    // Added Locale.getDefault() to the String.format method to specify the locale
-                    // explicitly
+                    // Update the time remaining string
                     timeRemaining = String.format(Locale.getDefault(),
                         "%02d Days %02d Hours %02d Minutes %02d Seconds",
                         days, hours, minutes, seconds)
@@ -143,46 +145,46 @@ fun EventDetailScreen(eventTitle: String, eventDate: String, eventNote: String?)
             }
         }
 
-        // Refactored the loop to check the condition in the while loop itself (while (timeRemaining
-        // != "Event has passed")), thus removing the need for break.
+        // Continuously update the remaining time every second until the event has passed
         while (timeRemaining != "Event has passed") {
             updateRemainingTime()
             delay(1000L) // Update every second
         }
     }
 
+    // Layout for the event details
     Column(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .fillMaxWidth() // Fill the width of the parent container
+            .padding(16.dp), // Apply padding around the Column
+        horizontalAlignment = Alignment.CenterHorizontally // Center children horizontally
     ) {
         // Display the event title
         Text(
             text = eventTitle,
-            style = MaterialTheme.typography.displayLarge,
-            color = MaterialTheme.colorScheme.onSurface
+            style = MaterialTheme.typography.displayLarge, // Large display style for the title
+            color = MaterialTheme.colorScheme.onSurface // Text color from the theme
         )
         // Display the event date
         Text(
             text = eventDate,
-            style = MaterialTheme.typography.headlineMedium,
-            color = MaterialTheme.colorScheme.onSurface
+            style = MaterialTheme.typography.headlineMedium, // Medium headline style for the date
+            color = MaterialTheme.colorScheme.onSurface // Text color from the theme
         )
         // Display the countdown timer
         Text(
             text = timeRemaining,
-            style = MaterialTheme.typography.displayMedium,
-            color = MaterialTheme.colorScheme.primary,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(bottom = 16.dp)
+            style = MaterialTheme.typography.displayMedium, // Medium display style for the timer
+            color = MaterialTheme.colorScheme.primary, // Primary color from the theme
+            fontWeight = FontWeight.Bold, // Bold font weight for emphasis
+            modifier = Modifier.padding(bottom = 16.dp) // Bottom padding for spacing
         )
         // Display the event note, if available
         eventNote?.let {
             Text(
                 text = it,
-                style = MaterialTheme.typography.bodyLarge,
-                color = MaterialTheme.colorScheme.onSurface
+                style = MaterialTheme.typography.bodyLarge, // Large body style for the note
+                color = MaterialTheme.colorScheme.onSurface // Text color from the theme
             )
         }
     }
