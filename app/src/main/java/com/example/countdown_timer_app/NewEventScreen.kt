@@ -216,7 +216,11 @@ fun DateAndTimeInput() {
 }
 
 @Composable
-fun NewEventScreenLayout(onBack: () -> Unit, onStart: () -> Unit, isStartEnabled: Boolean) {
+fun NewEventScreenLayout(
+    onBack: () -> Unit,
+    onStart: () -> Unit,
+    isStartEnabled: Boolean
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()

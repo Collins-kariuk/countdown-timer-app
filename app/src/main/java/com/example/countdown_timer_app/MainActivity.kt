@@ -177,6 +177,23 @@ fun NewEventButton(onAddEventClicked: () -> Unit) {
     }
 }
 
+data class Event(val name: String)
+
+@Composable
+fun EventList(events: List<Event>) {
+    LazyColumn {
+        items(events) { event ->
+            Text(
+                text = event.name,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                style = MaterialTheme.typography.bodyLarge
+            )
+        }
+    }
+}
+
 @Composable
 fun HomeScreenLayout(
     searchQuery: String,
@@ -217,23 +234,6 @@ fun HomeScreenLayout(
                 // Adds space between button & other content
                 Spacer(modifier = Modifier.height(16.dp))
             }
-        }
-    }
-}
-
-data class Event(val name: String)
-
-@Composable
-fun EventList(events: List<Event>) {
-    LazyColumn {
-        items(events) { event ->
-            Text(
-                text = event.name,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                style = MaterialTheme.typography.bodyLarge
-            )
         }
     }
 }
