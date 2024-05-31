@@ -21,6 +21,7 @@ import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -191,16 +192,30 @@ fun EventDetailScreen(eventTitle: String, eventDate: String, eventNote: String?)
 fun EventScreenLayout(onShareClicked: () -> Unit,
                       onEditClicked: () -> Unit,
                       onStartClicked: () -> Unit) {
-    Column {
-        EventScreenAppBar(onShareClicked = onShareClicked,
-            onEditClicked = onEditClicked,
-            onStartClicked = onStartClicked)
-
-        EventDetailScreen(
-            eventTitle = "Meeting with Team",
-            eventDate = "2024-05-15 14:00",
-            eventNote = "Discuss quarterly goals."
-        )
+    // Scaffold composable provides a layout structure with a top bar and a content area
+    Scaffold(
+        topBar = {
+            EventScreenAppBar(
+                onShareClicked = onShareClicked,
+                onEditClicked = onEditClicked,
+                onStartClicked = onStartClicked
+            )
+        }
+    ) { innerPadding ->
+        // Surface composable provides a background for the app's content area
+        Surface(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .background(MaterialTheme.colorScheme.tertiaryContainer),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            EventDetailScreen(
+                eventTitle = "Meeting with Team",
+                eventDate = "2024-05-15 14:00",
+                eventNote = "Discuss quarterly goals."
+            )
+        }
     }
 }
 
