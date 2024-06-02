@@ -22,7 +22,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.text.input.ImeAction
 import androidx.wear.compose.material.ContentAlpha
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.VisualTransformation
 import com.example.countdown_timer_app.ui.theme.CountdowntimerappTheme
 
 class NewEventScreen : ComponentActivity() {
@@ -197,8 +196,7 @@ fun EditTextField(
     onValueChanged: (String) -> Unit,
     modifier: Modifier = Modifier,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    singleLine: Boolean = true,
-    visualTransformation: VisualTransformation = VisualTransformation.None
+    singleLine: Boolean = true
 ) {
     TextField(
         value = value,
@@ -206,7 +204,6 @@ fun EditTextField(
         label = { Text(label) },
         singleLine = singleLine,
         keyboardOptions = keyboardOptions,
-        visualTransformation = visualTransformation,
         modifier = modifier.fillMaxWidth(),
     )
 }
