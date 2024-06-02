@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.wear.compose.material.ContentAlpha
 import androidx.compose.ui.text.input.KeyboardType
@@ -85,25 +86,6 @@ fun NewEventScreenAppBar(onBack: () -> Unit, onStart: () -> Unit, isStartEnabled
     }
 }
 
-@Composable
-fun EditTextField(
-    label: String,
-    value: String,
-    onValueChanged: (String) -> Unit,
-    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    singleLine: Boolean = true,
-    modifier: Modifier = Modifier
-) {
-    TextField(
-        value = value,
-        onValueChange = onValueChanged,
-        label = { Text(label) },
-        singleLine = singleLine,
-        keyboardOptions = keyboardOptions,
-        modifier = modifier.fillMaxWidth(),
-    )
-}
-
 /**
  * This composable function provides input fields for the user to enter the event details,
  * including the event name, optional notes, and event location. The location field allows the
@@ -123,14 +105,14 @@ fun EventDetailsInput() {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(
-            text = "Please enter your event details.",
+            text = stringResource(R.string.enter_event_details),
             modifier = Modifier
                 .padding(bottom = 16.dp, top = 40.dp)
                 .align(alignment = Alignment.Start)
         )
 
         EditTextField(
-            label = "Event Name",
+            label = stringResource(R.string.event_name),
             value = eventName,
             onValueChanged = { eventName = it }
         )
@@ -138,7 +120,7 @@ fun EventDetailsInput() {
         Spacer(modifier = Modifier.height(16.dp))
 
         EditTextField(
-            label = "Event Location",
+            label = stringResource(R.string.event_location),
             value = eventLocation,
             onValueChanged = { eventLocation = it }
         )
@@ -146,13 +128,71 @@ fun EventDetailsInput() {
         Spacer(modifier = Modifier.height(16.dp))
 
         EditTextField(
-            label = "Event Note (Optional)",
+            label = stringResource(R.string.optional_event_note),
             value = eventNotes,
             onValueChanged = { eventNotes = it },
             singleLine = false,
             modifier = Modifier.height(100.dp)
         )
     }
+}
+
+@Composable
+fun NewEventScreenLayout(
+    onBack: () -> Unit,
+    onStart: () -> Unit,
+    isStartEnabled: Boolean
+) {
+    // Scaffold composable provides a layout structure with a top bar and a content area
+    Scaffold(
+        topBar = {
+            NewEventScreenAppBar(
+                onBack = onBack,
+                onStart = onStart,
+                isStartEnabled = isStartEnabled
+            )
+        }
+    ) { innerPadding ->
+        // Surface composable provides a background for the app's content area
+        Surface(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .background(MaterialTheme.colorScheme.tertiaryContainer),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                // Aligns content to the start horizontally and top vertically
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.Start
+            ) {
+                EventDetailsInput()
+                DateAndTimeInput()
+            }
+        }
+    }
+}
+
+@Composable
+fun EditTextField(
+    label: String,
+    value: String,
+    onValueChanged: (String) -> Unit,
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    singleLine: Boolean = true,
+    modifier: Modifier = Modifier
+) {
+    TextField(
+        value = value,
+        onValueChange = onValueChanged,
+        label = { Text(label) },
+        singleLine = singleLine,
+        keyboardOptions = keyboardOptions,
+        modifier = modifier.fillMaxWidth(),
+    )
 }
 
 /**
@@ -210,45 +250,6 @@ fun DateAndTimeInput() {
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     modifier = Modifier.fillMaxWidth()
                 )
-            }
-        }
-    }
-}
-
-@Composable
-fun NewEventScreenLayout(
-    onBack: () -> Unit,
-    onStart: () -> Unit,
-    isStartEnabled: Boolean
-) {
-    // Scaffold composable provides a layout structure with a top bar and a content area
-    Scaffold(
-        topBar = {
-            NewEventScreenAppBar(
-                onBack = onBack,
-                onStart = onStart,
-                isStartEnabled = isStartEnabled
-            )
-        }
-    ) { innerPadding ->
-        // Surface composable provides a background for the app's content area
-        Surface(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .background(MaterialTheme.colorScheme.tertiaryContainer),
-            color = MaterialTheme.colorScheme.background
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                // Aligns content to the start horizontally and top vertically
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.Start
-            ) {
-                EventDetailsInput()
-                DateAndTimeInput()
             }
         }
     }

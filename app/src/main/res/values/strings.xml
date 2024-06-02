@@ -4,4 +4,8 @@
     <string name="New_event_String">Add a new event</string>
     <string name="back">Back_button</string>
     <string name="start">Start_button</string>
+    <string name="enter_event_details">Please enter your event details</string>
+    <string name="event_name">Event Name</string>
+    <string name="event_location">Event Location</string>
+    <string name="optional_event_note">Event Note (Optional)</string>
 </resources>
