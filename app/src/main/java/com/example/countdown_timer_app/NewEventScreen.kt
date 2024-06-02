@@ -19,6 +19,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.input.ImeAction
 import androidx.wear.compose.material.ContentAlpha
 import androidx.compose.ui.text.input.KeyboardType
 import com.example.countdown_timer_app.ui.theme.CountdowntimerappTheme
@@ -114,7 +115,10 @@ fun EventDetailsInput() {
         EditTextField(
             label = stringResource(R.string.event_name),
             value = eventName,
-            onValueChanged = { eventName = it }
+            onValueChanged = { eventName = it },
+            keyboardOptions = KeyboardOptions.Default.copy(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Next)
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -122,7 +126,10 @@ fun EventDetailsInput() {
         EditTextField(
             label = stringResource(R.string.event_location),
             value = eventLocation,
-            onValueChanged = { eventLocation = it }
+            onValueChanged = { eventLocation = it },
+            keyboardOptions = KeyboardOptions.Default.copy(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Next)
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -131,6 +138,9 @@ fun EventDetailsInput() {
             label = stringResource(R.string.optional_event_note),
             value = eventNotes,
             onValueChanged = { eventNotes = it },
+            keyboardOptions = KeyboardOptions.Default.copy(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Done),
             singleLine = false,
             modifier = Modifier.height(100.dp)
         )
@@ -181,9 +191,9 @@ fun EditTextField(
     label: String,
     value: String,
     onValueChanged: (String) -> Unit,
+    modifier: Modifier = Modifier,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    singleLine: Boolean = true,
-    modifier: Modifier = Modifier
+    singleLine: Boolean = true
 ) {
     TextField(
         value = value,
