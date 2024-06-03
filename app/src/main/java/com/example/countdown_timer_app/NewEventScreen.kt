@@ -22,6 +22,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.text.input.ImeAction
 import androidx.wear.compose.material.ContentAlpha
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.input.OffsetMapping
+import androidx.compose.ui.text.input.TransformedText
+import androidx.compose.ui.text.input.VisualTransformation
 import com.example.countdown_timer_app.ui.theme.CountdowntimerappTheme
 
 class NewEventScreen : ComponentActivity() {
@@ -196,7 +200,8 @@ fun EditTextField(
     onValueChanged: (String) -> Unit,
     modifier: Modifier = Modifier,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    singleLine: Boolean = true
+    singleLine: Boolean = true,
+    visualTransformation: VisualTransformation = VisualTransformation.None
 ) {
     TextField(
         value = value,
@@ -204,8 +209,57 @@ fun EditTextField(
         label = { Text(label) },
         singleLine = singleLine,
         keyboardOptions = keyboardOptions,
+        visualTransformation = visualTransformation,
         modifier = modifier.fillMaxWidth(),
     )
+}
+
+fun dateVisualTransformation(): VisualTransformation {
+    return VisualTransformation { text ->
+        val trimmed = if (text.text.length >= 8) text.text.substring(0..7) else text.text
+        val out = StringBuilder()
+
+        for (i in trimmed.indices) {
+            out.append(trimmed[i])
+            if (i == 1 || i == 3) out.append('/')
+        }
+
+        val offsetTranslator = object : OffsetMapping {
+            override fun originalToTransformed(offset: Int): Int {
+                return if (offset <= 1) offset else if (offset <= 3) offset + 1 else offset + 2
+            }
+
+            override fun transformedToOriginal(offset: Int): Int {
+                return if (offset <= 2) offset else if (offset <= 5) offset - 1 else offset - 2
+            }
+        }
+
+        TransformedText(text = AnnotatedString(out.toString()), offsetMapping = offsetTranslator)
+    }
+}
+
+fun timeVisualTransformation(): VisualTransformation {
+    return VisualTransformation { text ->
+        val trimmed = if (text.text.length >= 4) text.text.substring(0..3) else text.text
+        val out = StringBuilder()
+
+        for (i in trimmed.indices) {
+            out.append(trimmed[i])
+            if (i == 1) out.append(':')
+        }
+
+        val offsetTranslator = object : OffsetMapping {
+            override fun originalToTransformed(offset: Int): Int {
+                return if (offset <= 1) offset else offset + 1
+            }
+
+            override fun transformedToOriginal(offset: Int): Int {
+                return if (offset <= 2) offset else offset - 1
+            }
+        }
+
+        TransformedText(text = AnnotatedString(out.toString()), offsetMapping = offsetTranslator)
+    }
 }
 
 /**
@@ -245,7 +299,8 @@ fun DateAndTimeInput() {
                     keyboardOptions = KeyboardOptions.Default.copy(
                         keyboardType = KeyboardType.Number,
                         imeAction = ImeAction.Next
-                    )
+                    ),
+                    visualTransformation = dateVisualTransformation()
                 )
             }
 
@@ -264,8 +319,9 @@ fun DateAndTimeInput() {
                     onValueChanged = { selectedTime = it },
                     keyboardOptions = KeyboardOptions.Default.copy(
                         keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Next
-                    )
+                        imeAction = ImeAction.Done
+                    ),
+                    visualTransformation = timeVisualTransformation()
                 )
             }
         }
