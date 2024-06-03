@@ -265,30 +265,52 @@ fun dateVisualTransformation(): VisualTransformation {
     }
 }
 
-
+// Defines a function that returns a VisualTransformation for a time input field.
 fun timeVisualTransformation(): VisualTransformation {
+    // Returns a VisualTransformation object that transforms the input text visually.
     return VisualTransformation { text ->
-        val trimmed = if (text.text.length >= 4) text.text.substring(0..3) else text.text
+        // Trims the input text to a maximum length of 4 characters.
+        val trimmed = if (text.text.length >= 4) text.text.substring(0..3)
+                    else text.text
+
+        // StringBuilder is used to build the transformed text efficiently.
         val out = StringBuilder()
 
+        // Loop through each character in the trimmed text.
         for (i in trimmed.indices) {
+            // Append the current character to the StringBuilder.
             out.append(trimmed[i])
+            // Insert a ':' after the second character.
             if (i == 1) out.append(':')
         }
 
+        // Defines an offset mapping to correctly map cursor position between original and
+        // transformed text.
         val offsetTranslator = object : OffsetMapping {
+            // Maps the cursor position from original to transformed text.
             override fun originalToTransformed(offset: Int): Int {
-                return if (offset <= 1) offset else offset + 1
+                return if (offset <= 1) {
+                    offset // Before or at the ':'
+                } else {
+                    offset + 1 // After the ':'
+                }
             }
 
+            // Maps the cursor position from transformed to original text.
             override fun transformedToOriginal(offset: Int): Int {
-                return if (offset <= 2) offset else offset - 1
+                return if (offset <= 2) {
+                    offset // Before or at the ':'
+                } else {
+                    offset - 1 // After the ':'
+                }
             }
         }
 
+        // Returns a TransformedText object with the transformed text and the offset mapping.
         TransformedText(text = AnnotatedString(out.toString()), offsetMapping = offsetTranslator)
     }
 }
+
 
 /**
  * This composable function provides date and time pickers for the user to select the event's date
