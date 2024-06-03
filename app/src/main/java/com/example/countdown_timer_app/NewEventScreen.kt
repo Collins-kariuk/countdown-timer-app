@@ -147,7 +147,7 @@ fun EventDetailsInput() {
             onValueChanged = { eventNotes = it },
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Text,
-                imeAction = ImeAction.Done),
+                imeAction = ImeAction.Next),
             singleLine = false,
             modifier = Modifier.height(100.dp)
         )
@@ -310,7 +310,6 @@ fun timeVisualTransformation(): VisualTransformation {
         TransformedText(text = AnnotatedString(out.toString()), offsetMapping = offsetTranslator)
     }
 }
-
 
 /**
  * This composable function provides date and time pickers for the user to select the event's date
