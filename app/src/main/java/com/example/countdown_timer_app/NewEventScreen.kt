@@ -214,29 +214,57 @@ fun EditTextField(
     )
 }
 
+// Defines a function that returns a VisualTransformation for a date input field.
 fun dateVisualTransformation(): VisualTransformation {
+    // Returns a VisualTransformation object that transforms the input text visually.
     return VisualTransformation { text ->
-        val trimmed = if (text.text.length >= 8) text.text.substring(0..7) else text.text
+        // Trims the input text to a maximum length of 8 characters. This ensures the format
+        // MM/DD/YYYY.
+        val trimmed = if (text.text.length >= 8) text.text.substring(0..7)
+                    else text.text
+
+        // StringBuilder is used to build the transformed text efficiently.
         val out = StringBuilder()
 
+        // Loop through each character in the trimmed text.
         for (i in trimmed.indices) {
+            // Append the current character to the StringBuilder.
             out.append(trimmed[i])
+            // Insert a '/' after the second and fourth characters to match the MM/DD/YYYY format.
             if (i == 1 || i == 3) out.append('/')
         }
 
+        // Defines an offset mapping to correctly map cursor position between original and
+        // transformed text.
         val offsetTranslator = object : OffsetMapping {
+            // Maps the cursor position from original to transformed text.
             override fun originalToTransformed(offset: Int): Int {
-                return if (offset <= 1) offset else if (offset <= 3) offset + 1 else offset + 2
+                return if (offset <= 1) {
+                    offset // Before or at the first '/'
+                } else if (offset <= 3) {
+                    offset + 1 // Between the first '/' and second '/'
+                } else {
+                    offset + 2 // After the second '/'
+                }
             }
 
+            // Maps the cursor position from transformed to original text.
             override fun transformedToOriginal(offset: Int): Int {
-                return if (offset <= 2) offset else if (offset <= 5) offset - 1 else offset - 2
+                return if (offset <= 2) {
+                    offset // Before or at the first '/'
+                } else if (offset <= 5) {
+                    offset - 1 // Between the first '/' and second '/'
+                } else {
+                    offset - 2 // After the second '/'
+                }
             }
         }
 
+        // Returns a TransformedText object with the transformed text and the offset mapping.
         TransformedText(text = AnnotatedString(out.toString()), offsetMapping = offsetTranslator)
     }
 }
+
 
 fun timeVisualTransformation(): VisualTransformation {
     return VisualTransformation { text ->
