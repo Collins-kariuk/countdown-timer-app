@@ -327,6 +327,8 @@ fun timeVisualTransformation(): VisualTransformation {
 fun DateAndTimeInput() {
     var selectedDate by remember { mutableStateOf("") }
     var selectedTime by remember { mutableStateOf("") }
+    var selectedPeriod by remember { mutableStateOf("AM") }
+    var expanded by remember { mutableStateOf(false) }
 
     Column(modifier = Modifier.fillMaxWidth()) {
         Row(
@@ -362,16 +364,42 @@ fun DateAndTimeInput() {
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
-                EditTextField(
-                    label = "HH:MM",
-                    value = selectedTime,
-                    onValueChanged = { selectedTime = it },
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Done
-                    ),
-                    visualTransformation = timeVisualTransformation()
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    EditTextField(
+                        label = "HH:MM",
+                        value = selectedTime,
+                        onValueChanged = { selectedTime = it },
+                        keyboardOptions = KeyboardOptions.Default.copy(
+                            keyboardType = KeyboardType.Number,
+                            imeAction = ImeAction.Done
+                        ),
+                        visualTransformation = timeVisualTransformation(),
+                        modifier = Modifier.weight(1f)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Box {
+                        Button(onClick = { expanded = true }) {
+                            Text(selectedPeriod)
+                        }
+                        DropdownMenu(
+                            expanded = expanded,
+                            onDismissRequest = { expanded = false }
+                        ) {
+                            DropdownMenuItem(
+                                text = { Text("AM") },
+                                onClick = { selectedPeriod = "AM"
+                                            expanded = false })
+
+                            DropdownMenuItem(
+                                text = { Text("PM") },
+                                onClick = { selectedPeriod = "PM"
+                                            expanded = false })
+                        }
+                    }
+                }
             }
         }
     }
