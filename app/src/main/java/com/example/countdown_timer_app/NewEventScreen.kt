@@ -238,12 +238,14 @@ fun DateAndTimeInput() {
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
-                TextField(
+                EditTextField(
+                    label = "MM/DD/YYYY",
                     value = selectedDate,
-                    onValueChange = { selectedDate = it },
-                    label = { Text("MM/DD/YYYY") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    modifier = Modifier.fillMaxWidth()
+                    onValueChanged = { selectedDate = it },
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Next
+                    )
                 )
             }
 
@@ -256,12 +258,14 @@ fun DateAndTimeInput() {
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.padding(bottom = 8.dp)
                 )
-                TextField(
+                EditTextField(
+                    label = "HH:MM",
                     value = selectedTime,
-                    onValueChange = { selectedTime = it },
-                    label = { Text("HH:MM") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                    modifier = Modifier.fillMaxWidth()
+                    onValueChanged = { selectedTime = it },
+                    keyboardOptions = KeyboardOptions.Default.copy(
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Next
+                    )
                 )
             }
         }
