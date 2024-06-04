@@ -28,6 +28,10 @@ import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.time.LocalDate
+import java.time.LocalTime
+import androidx.room.TypeConverter
+import java.time.format.DateTimeFormatter
 import com.example.countdown_timer_app.ui.theme.CountdowntimerappTheme
 
 class NewEventScreen : ComponentActivity() {
@@ -55,6 +59,16 @@ class NewEventScreen : ComponentActivity() {
         }
     }
 }
+
+@Entity(tableName = "events")
+data class Event(
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    val eventName: String,
+    val eventLocation: String,
+    val eventNotes: String?,
+    val eventDate: LocalDate,
+    val eventTime: LocalTime
+)
 
 @Composable
 fun NewEventScreenAppBar(onBack: () -> Unit, onStart: () -> Unit, isStartEnabled: Boolean) {
