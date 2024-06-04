@@ -1,9 +1,11 @@
 package com.example.countdown_timer_app
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -69,6 +71,23 @@ data class Event(
     val eventDate: LocalDate,
     val eventTime: LocalTime
 )
+
+class LocalDateConverter {
+    @RequiresApi(Build.VERSION_CODES.O)
+    private val formatter = DateTimeFormatter.ISO_LOCAL_DATE
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    @TypeConverter
+    fun fromString(value: String?): LocalDate? {
+        return value?.let { LocalDate.parse(it, formatter) }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    @TypeConverter
+    fun dateToString(date: LocalDate?): String? {
+        return date?.format(formatter)
+    }
+}
 
 @Composable
 fun NewEventScreenAppBar(onBack: () -> Unit, onStart: () -> Unit, isStartEnabled: Boolean) {
