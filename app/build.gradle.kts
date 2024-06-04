@@ -1,17 +1,11 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    id("com.google.devtools.ksp")
-    id("androidx.room")
 }
 
 android {
     namespace = "com.example.countdown_timer_app"
     compileSdk = 34
-
-    room {
-        schemaDirectory("$projectDir/schemas")
-    }
 
     defaultConfig {
         applicationId = "com.example.countdown_timer_app"
@@ -68,29 +62,6 @@ dependencies {
     implementation("androidx.compose.material3:material3:1.2.1")
     implementation("com.google.ar.sceneform:filament-android:1.17.1")
     implementation("androidx.wear.compose:compose-material:1.3.1")
-
-    // Necessary Room database dependencies
-    val roomVersion = "2.6.1"
-    implementation("androidx.room:room-runtime:2.6.1")
-    implementation("com.android.support:support-annotations:28.0.0")
-    implementation("androidx.room:room-ktx:2.6.1")
-    implementation("androidx.room:room-runtime:$roomVersion")
-    annotationProcessor("androidx.room:room-compiler:$roomVersion")
-    // To use Kotlin Symbol Processing (KSP)
-    ksp("androidx.room:room-compiler:$roomVersion")
-    // optional - Kotlin Extensions and Coroutines support for Room
-    implementation("androidx.room:room-ktx:$roomVersion")
-    // optional - RxJava2 support for Room
-    implementation("androidx.room:room-rxjava2:$roomVersion")
-    // optional - RxJava3 support for Room
-    implementation("androidx.room:room-rxjava3:$roomVersion")
-    // optional - Guava support for Room, including Optional and ListenableFuture
-    implementation("androidx.room:room-guava:$roomVersion")
-    // optional - Test helpers
-    testImplementation("androidx.room:room-testing:$roomVersion")
-    // optional - Paging 3 Integration
-    implementation("androidx.room:room-paging:$roomVersion")
-
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
