@@ -34,6 +34,9 @@ import java.time.LocalDate
 import java.time.LocalTime
 import androidx.room.TypeConverter
 import java.time.format.DateTimeFormatter
+import androidx.room.Database
+import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import com.example.countdown_timer_app.ui.theme.CountdowntimerappTheme
 
 class NewEventScreen : ComponentActivity() {
@@ -104,6 +107,12 @@ class LocalTimeConverter {
     fun timeToString(time: LocalTime?): String? {
         return time?.format(formatter)
     }
+}
+
+@Database(entities = [Event::class], version = 1)
+@TypeConverters(LocalDateConverter::class, LocalTimeConverter::class)
+abstract class AppDatabase : RoomDatabase() {
+    abstract fun eventDao(): EventDao
 }
 
 @Composable
