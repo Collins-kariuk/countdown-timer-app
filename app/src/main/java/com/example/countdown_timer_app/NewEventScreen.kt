@@ -40,6 +40,8 @@ import androidx.room.TypeConverters
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.compose.runtime.rememberCoroutineScope
+import kotlinx.coroutines.launch
 import com.example.countdown_timer_app.ui.theme.CountdowntimerappTheme
 
 class NewEventScreen : ComponentActivity() {
@@ -125,6 +127,11 @@ interface EventDao {
 
     @Query("SELECT * FROM events ORDER BY date ASC")
     suspend fun getAllEvents(): List<Event>
+}
+
+@Database(entities = [Event::class], version = 1)
+abstract class AppDatabase : RoomDatabase() {
+    abstract fun eventDao(): EventDao
 }
 
 @Composable
@@ -231,38 +238,50 @@ fun EventDetailsInput() {
 fun NewEventScreenLayout(
     onBack: () -> Unit,
     onStart: () -> Unit,
-    isStartEnabled: Boolean
+    isStartEnabled: Boolean,
+    eventDao: EventDao
 ) {
-    // Scaffold composable provides a layout structure with a top bar and a content area
-    Scaffold(
-        topBar = {
-            NewEventScreenAppBar(
-                onBack = onBack,
-                onStart = onStart,
-                isStartEnabled = isStartEnabled
-            )
-        }
-    ) { innerPadding ->
-        // Surface composable provides a background for the app's content area
-        Surface(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .background(MaterialTheme.colorScheme.tertiaryContainer),
-            color = MaterialTheme.colorScheme.background
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                // Aligns content to the start horizontally and top vertically
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.Start
-            ) {
-                EventDetailsInput()
-                DateAndTimeInput()
+    val scope = rememberCoroutineScope()
+    var eventName by remember { mutableStateOf("") }
+    var eventDate by remember { mutableStateOf("") }
+    var eventTime by remember { mutableStateOf("") }
+    var eventNote by remember { mutableStateOf("") }
+
+    Column(
+        modifier = Modifier.fillMaxSize().padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Top
+    ) {
+        NewEventScreenAppBar(onBack, {
+            scope.launch {
+                eventDao.insert(Event(
+                    name = eventName,
+                    date = eventDate,
+                    time = eventTime,
+                    note = eventNote)
+                )
+                onStart()
             }
-        }
+        }, isStartEnabled)
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Other input fields for event details
+        EventDetailsInput(
+            eventName,
+            { eventName = it },
+            eventDate,
+            { eventDate = it },
+            eventTime,
+            { eventTime = it },
+            eventNote,
+            { eventNote = it })
+
+        DateAndTimeInput(
+            selectedDate = eventDate,
+            onDateChanged = { eventDate = it },
+            selectedTime = eventTime,
+            onTimeChanged = { eventTime = it })
     }
 }
 
