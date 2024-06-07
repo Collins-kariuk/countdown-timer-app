@@ -37,6 +37,9 @@ import java.time.format.DateTimeFormatter
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.Query
 import com.example.countdown_timer_app.ui.theme.CountdowntimerappTheme
 
 class NewEventScreen : ComponentActivity() {
@@ -113,6 +116,15 @@ class LocalTimeConverter {
 @TypeConverters(LocalDateConverter::class, LocalTimeConverter::class)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun eventDao(): EventDao
+}
+
+@Dao
+interface EventDao {
+    @Insert
+    suspend fun insert(event: Event)
+
+    @Query("SELECT * FROM events ORDER BY date ASC")
+    suspend fun getAllEvents(): List<Event>
 }
 
 @Composable
