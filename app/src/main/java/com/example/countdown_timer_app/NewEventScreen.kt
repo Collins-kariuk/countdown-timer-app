@@ -89,6 +89,23 @@ class LocalDateConverter {
     }
 }
 
+class LocalTimeConverter {
+    @RequiresApi(Build.VERSION_CODES.O)
+    private val formatter = DateTimeFormatter.ISO_LOCAL_TIME
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    @TypeConverter
+    fun fromString(value: String?): LocalTime? {
+        return value?.let { LocalTime.parse(it, formatter) }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    @TypeConverter
+    fun timeToString(time: LocalTime?): String? {
+        return time?.format(formatter)
+    }
+}
+
 @Composable
 fun NewEventScreenAppBar(onBack: () -> Unit, onStart: () -> Unit, isStartEnabled: Boolean) {
     Row(
