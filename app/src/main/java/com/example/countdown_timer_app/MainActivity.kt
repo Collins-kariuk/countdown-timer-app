@@ -8,6 +8,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -45,12 +46,29 @@ import androidx.compose.runtime.setValue
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.room.Room
 import com.example.countdown_timer_app.ui.theme.CountdowntimerappTheme
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
+    private lateinit var eventDao: EventDao
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        // Initialize the database and get the DAO
+        val db = Room.databaseBuilder(
+            applicationContext,
+            AppDatabase::class.java, "event-database"
+        ).build()
+        eventDao = db.eventDao()
+
         setContent {
             CountdowntimerappTheme {
                 // Declare a mutable state for the search query text.
@@ -77,7 +95,8 @@ class MainActivity : ComponentActivity() {
                                 isSearching = isSearching,
                                 onSearchToggle = { isSearching = !isSearching },
                                 // Navigate to "new_event" screen when the add event button is clicked.
-                                onAddEventClicked = { navController.navigate("new_event") }
+                                onAddEventClicked = { navController.navigate("new_event") },
+                                eventDao = eventDao
                             )
                         }
                         // Define the "new_event" composable destination.
@@ -87,7 +106,8 @@ class MainActivity : ComponentActivity() {
                                 // Navigate back to the previous screen ("home")
                                 onBack = { navController.popBackStack() },
                                 onStart = { /* TODO: Implement start functionality */ },
-                                isStartEnabled = true // Enable the start button.
+                                isStartEnabled = true, // Enable the start button.
+                                eventDao = eventDao
                             )
                         }
                     }
@@ -96,6 +116,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -191,9 +212,18 @@ fun HomeScreenLayout(
     onSearchQueryChange: (String) -> Unit,
     isSearching: Boolean,
     onSearchToggle: () -> Unit,
-    onAddEventClicked: () -> Unit
+    onAddEventClicked: () -> Unit,
+    eventDao: EventDao
 ) {
-    // Scaffold composable provides a layout structure with a top bar and a content area
+    var events by remember { mutableStateOf(listOf<Event>()) }
+    val scope = rememberCoroutineScope()
+
+    LaunchedEffect(Unit) {
+        scope.launch {
+            events = eventDao.getAllEvents()
+        }
+    }
+
     Scaffold(
         topBar = {
             HomeScreenAppBar(
@@ -204,7 +234,6 @@ fun HomeScreenLayout(
             )
         }
     ) { innerPadding ->
-        // Surface composable provides a background for the app's content area
         Surface(
             modifier = Modifier
                 .fillMaxSize()
@@ -216,14 +245,46 @@ fun HomeScreenLayout(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(16.dp),
-                // Aligns content to the start horizontally and top vertically
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.Start
             ) {
-                // New Event button positioned right below the AppBar at the top left
                 NewEventButton(onAddEventClicked)
-                // Adds space between button & other content
                 Spacer(modifier = Modifier.height(16.dp))
+
+                LazyVerticalGrid(
+                    columns = GridCells.Fixed(2), // Adjust the number of columns as needed
+                    contentPadding = PaddingValues(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    items(events) { event ->
+                        EventCard(event)
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun EventCard(event: NewEventScreen.Event) {
+    Surface(
+        modifier = Modifier.size(150.dp),
+        shape = RoundedCornerShape(8.dp),
+        border = BorderStroke(1.dp, Color.Gray),
+        color = MaterialTheme.colorScheme.surface
+    ) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(text = event.eventName, style = MaterialTheme.typography.bodyLarge)
+            Spacer(modifier = Modifier.height(8.dp))
+            Text(text = "${event.eventDate} ${event.eventTime}", style = MaterialTheme.typography.bodySmall)
+            event.eventNotes?.let {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(text = it, style = MaterialTheme.typography.bodySmall)
             }
         }
     }
