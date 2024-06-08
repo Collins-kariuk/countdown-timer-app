@@ -35,6 +35,7 @@ import java.time.LocalTime
 import androidx.room.TypeConverter
 import java.time.format.DateTimeFormatter
 import androidx.room.Database
+import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import androidx.room.Dao
@@ -45,10 +46,21 @@ import kotlinx.coroutines.launch
 import com.example.countdown_timer_app.ui.theme.CountdowntimerappTheme
 
 class NewEventScreen : ComponentActivity() {
+    private lateinit var eventDao: EventDao
+
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Makes the app content extend into window insets areas like status and navigation bars.
         enableEdgeToEdge()
+
+        // Initialize the database and get the DAO
+        val db = Room.databaseBuilder(
+            applicationContext,
+            AppDatabase::class.java, "event-database"
+        ).build()
+        eventDao = db.eventDao()
+
         setContent {
             CountdowntimerappTheme {
                 // A surface container using the 'background' color from the theme
@@ -62,7 +74,8 @@ class NewEventScreen : ComponentActivity() {
                     NewEventScreenLayout(
                         onBack = { /* TODO: Implement back functionality */ },
                         onStart = { /* TODO: Implement start functionality */ },
-                        isStartEnabled = true
+                        isStartEnabled = true,
+                        eventDao = eventDao
                     )
                 }
             }
@@ -125,13 +138,8 @@ interface EventDao {
     @Insert
     suspend fun insert(event: Event)
 
-    @Query("SELECT * FROM events ORDER BY date ASC")
+    @Query("SELECT * FROM events ORDER BY eventDate ASC")
     suspend fun getAllEvents(): List<Event>
-}
-
-@Database(entities = [Event::class], version = 1)
-abstract class AppDatabase : RoomDatabase() {
-    abstract fun eventDao(): EventDao
 }
 
 @Composable
@@ -171,120 +179,6 @@ fun NewEventScreenAppBar(onBack: () -> Unit, onStart: () -> Unit, isStartEnabled
     }
 }
 
-/**
- * This composable function provides input fields for the user to enter the event details,
- * including the event name, optional notes, and event location. The location field allows the
- * user to enter any location, without prompting for a specific place. The notes field is optional
- * by default.
- */
-@Composable
-fun EventDetailsInput() {
-    var eventName by remember { mutableStateOf("") }
-    var eventNotes by remember { mutableStateOf("") }
-    var eventLocation by remember { mutableStateOf("") }
-
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = stringResource(R.string.enter_event_details),
-            modifier = Modifier
-                .padding(bottom = 16.dp, top = 40.dp)
-                .align(alignment = Alignment.Start)
-        )
-
-        // Event Name
-        EditTextField(
-            label = stringResource(R.string.event_name),
-            value = eventName,
-            onValueChanged = { eventName = it },
-            keyboardOptions = KeyboardOptions.Default.copy(
-                keyboardType = KeyboardType.Text,
-                imeAction = ImeAction.Next)
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Event Location
-        EditTextField(
-            label = stringResource(R.string.event_location),
-            value = eventLocation,
-            onValueChanged = { eventLocation = it },
-            keyboardOptions = KeyboardOptions.Default.copy(
-                keyboardType = KeyboardType.Text,
-                imeAction = ImeAction.Next)
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Event Notes (Optional)
-        EditTextField(
-            label = stringResource(R.string.optional_event_note),
-            value = eventNotes,
-            onValueChanged = { eventNotes = it },
-            keyboardOptions = KeyboardOptions.Default.copy(
-                keyboardType = KeyboardType.Text,
-                imeAction = ImeAction.Next),
-            singleLine = false,
-            modifier = Modifier.height(100.dp)
-        )
-    }
-}
-
-@Composable
-fun NewEventScreenLayout(
-    onBack: () -> Unit,
-    onStart: () -> Unit,
-    isStartEnabled: Boolean,
-    eventDao: EventDao
-) {
-    val scope = rememberCoroutineScope()
-    var eventName by remember { mutableStateOf("") }
-    var eventDate by remember { mutableStateOf("") }
-    var eventTime by remember { mutableStateOf("") }
-    var eventNote by remember { mutableStateOf("") }
-
-    Column(
-        modifier = Modifier.fillMaxSize().padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
-    ) {
-        NewEventScreenAppBar(onBack, {
-            scope.launch {
-                eventDao.insert(Event(
-                    name = eventName,
-                    date = eventDate,
-                    time = eventTime,
-                    note = eventNote)
-                )
-                onStart()
-            }
-        }, isStartEnabled)
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Other input fields for event details
-        EventDetailsInput(
-            eventName,
-            { eventName = it },
-            eventDate,
-            { eventDate = it },
-            eventTime,
-            { eventTime = it },
-            eventNote,
-            { eventNote = it })
-
-        DateAndTimeInput(
-            selectedDate = eventDate,
-            onDateChanged = { eventDate = it },
-            selectedTime = eventTime,
-            onTimeChanged = { eventTime = it })
-    }
-}
-
 @Composable
 fun EditTextField(
     label: String,
@@ -313,7 +207,7 @@ fun dateVisualTransformation(): VisualTransformation {
         // Trims the input text to a maximum length of 8 characters. This ensures the format
         // MM/DD/YYYY.
         val trimmed = if (text.text.length >= 8) text.text.substring(0..7)
-                    else text.text
+        else text.text
 
         // StringBuilder is used to build the transformed text efficiently.
         val out = StringBuilder()
@@ -363,7 +257,7 @@ fun timeVisualTransformation(): VisualTransformation {
     return VisualTransformation { text ->
         // Trims the input text to a maximum length of 4 characters.
         val trimmed = if (text.text.length >= 4) text.text.substring(0..3)
-                    else text.text
+        else text.text
 
         // StringBuilder is used to build the transformed text efficiently.
         val out = StringBuilder()
@@ -416,9 +310,12 @@ fun timeVisualTransformation(): VisualTransformation {
  *   inputs.
  */
 @Composable
-fun DateAndTimeInput() {
-    var selectedDate by remember { mutableStateOf("") }
-    var selectedTime by remember { mutableStateOf("") }
+fun DateAndTimeInput(
+    selectedDate: String,
+    onDateChanged: (String) -> Unit,
+    selectedTime: String,
+    onTimeChanged: (String) -> Unit
+) {
     var selectedPeriod by remember { mutableStateOf("AM") }
     var expanded by remember { mutableStateOf(false) }
 
@@ -438,7 +335,7 @@ fun DateAndTimeInput() {
                 EditTextField(
                     label = "MM/DD/YYYY",
                     value = selectedDate,
-                    onValueChanged = { selectedDate = it },
+                    onValueChanged = onDateChanged,
                     keyboardOptions = KeyboardOptions.Default.copy(
                         keyboardType = KeyboardType.Number,
                         imeAction = ImeAction.Next
@@ -463,7 +360,7 @@ fun DateAndTimeInput() {
                     EditTextField(
                         label = "HH:MM",
                         value = selectedTime,
-                        onValueChanged = { selectedTime = it },
+                        onValueChanged = onTimeChanged,
                         keyboardOptions = KeyboardOptions.Default.copy(
                             keyboardType = KeyboardType.Number,
                             imeAction = ImeAction.Done
@@ -482,13 +379,17 @@ fun DateAndTimeInput() {
                         ) {
                             DropdownMenuItem(
                                 text = { Text("AM") },
-                                onClick = { selectedPeriod = "AM"
-                                            expanded = false })
+                                onClick = {
+                                    selectedPeriod = "AM"
+                                    expanded = false
+                                })
 
                             DropdownMenuItem(
                                 text = { Text("PM") },
-                                onClick = { selectedPeriod = "PM"
-                                            expanded = false })
+                                onClick = {
+                                    selectedPeriod = "PM"
+                                    expanded = false
+                                })
                         }
                     }
                 }
@@ -497,14 +398,150 @@ fun DateAndTimeInput() {
     }
 }
 
+/**
+ * This composable function provides input fields for the user to enter the event details,
+ * including the event name, optional notes, and event location. The location field allows the
+ * user to enter any location, without prompting for a specific place. The notes field is optional
+ * by default.
+ */
+@Composable
+fun EventDetailsInput(
+    eventName: String,
+    onEventNameChange: (String) -> Unit,
+    eventLocation: String,
+    onEventLocationChange: (String) -> Unit,
+    eventNotes: String,
+    onEventNotesChange: (String) -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = stringResource(R.string.enter_event_details),
+            modifier = Modifier
+                .padding(bottom = 16.dp, top = 40.dp)
+                .align(alignment = Alignment.Start)
+        )
+
+        // Event Name
+        EditTextField(
+            label = stringResource(R.string.event_name),
+            value = eventName,
+            onValueChanged = onEventNameChange,
+            keyboardOptions = KeyboardOptions.Default.copy(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Next)
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Event Location
+        EditTextField(
+            label = stringResource(R.string.event_location),
+            value = eventLocation,
+            onValueChanged = onEventLocationChange,
+            keyboardOptions = KeyboardOptions.Default.copy(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Next)
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Event Notes (Optional)
+        EditTextField(
+            label = stringResource(R.string.optional_event_note),
+            value = eventNotes,
+            onValueChanged = onEventNotesChange,
+            keyboardOptions = KeyboardOptions.Default.copy(
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Next),
+            singleLine = false,
+            modifier = Modifier.height(100.dp)
+        )
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+fun NewEventScreenLayout(
+    onBack: () -> Unit,
+    onStart: () -> Unit,
+    isStartEnabled: Boolean,
+    eventDao: EventDao
+) {
+    val scope = rememberCoroutineScope()
+    var eventName by remember { mutableStateOf("") }
+    var eventDate by remember { mutableStateOf("") }
+    var eventTime by remember { mutableStateOf("") }
+    var eventNote by remember { mutableStateOf("") }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Top
+    ) {
+        NewEventScreenAppBar(onBack, {
+            scope.launch {
+                eventDao.insert(Event(
+                    eventName = eventName,
+                    eventLocation = "",
+                    eventNotes = eventNote,
+                    eventDate = LocalDate.parse(eventDate),
+                    eventTime = LocalTime.parse(eventTime)
+                ))
+                onStart()
+            }
+        }, isStartEnabled)
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        // Other input fields for event details
+        EventDetailsInput(
+            eventName = eventName,
+            onEventNameChange = { eventName = it },
+            eventLocation = "",
+            onEventLocationChange = { /* handle location change if necessary */ },
+            eventNotes = eventNote,
+            onEventNotesChange = { eventNote = it }
+        )
+
+        DateAndTimeInput(
+            selectedDate = eventDate,
+            onDateChanged = { eventDate = it },
+            selectedTime = eventTime,
+            onTimeChanged = { eventTime = it }
+        )
+    }
+}
+
+// Mock implementation of EventDao for preview purposes
+class MockEventDao : EventDao {
+    override suspend fun insert(event: Event) {
+        // Mock implementation
+    }
+
+    override suspend fun getAllEvents(): List<Event> {
+        return emptyList() // Mock implementation
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 fun NewEventScreenPreview() {
+    val mockEventDao = MockEventDao()
+
     CountdowntimerappTheme {
         NewEventScreenLayout(
             onBack = { /* TODO: Implement back functionality */ },
             onStart = { /* TODO: Implement start functionality */ },
-            isStartEnabled = true
+            isStartEnabled = true,
+            eventDao = mockEventDao
         )
     }
 }
