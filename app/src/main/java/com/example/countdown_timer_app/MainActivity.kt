@@ -55,7 +55,6 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.room.Room
 import com.example.countdown_timer_app.ui.theme.CountdowntimerappTheme
-import com.google.android.datatransport.Event
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
@@ -209,6 +208,7 @@ fun NewEventButton(onAddEventClicked: () -> Unit) {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeScreenLayout(
     searchQuery: String,
@@ -270,7 +270,7 @@ fun HomeScreenLayout(
 }
 
 @Composable
-fun EventCard(event: NewEventScreen.Event) {
+fun EventCard(event: Event) {
     Surface(
         modifier = Modifier.size(150.dp),
         shape = RoundedCornerShape(8.dp),
@@ -293,6 +293,7 @@ fun EventCard(event: NewEventScreen.Event) {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 fun HomeScreenPreview() {
@@ -305,7 +306,8 @@ fun HomeScreenPreview() {
             onSearchQueryChange = { searchQuery = it },
             isSearching = isSearching,
             onSearchToggle = { isSearching = !isSearching },
-            onAddEventClicked = { /* TODO: Implement add event functionality */ }
+            onAddEventClicked = { /* TODO: Implement add event functionality */ },
+            eventDao = MockEventDao()
         )
     }
 }
