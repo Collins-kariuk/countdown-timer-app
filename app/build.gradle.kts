@@ -66,6 +66,7 @@ dependencies {
 
     // Implementations for the Room database.
     implementation("androidx.room:room-runtime:2.6.1")
+    implementation("androidx.compose.ui:ui-text-google-fonts:1.6.7")
     annotationProcessor("androidx.room:room-compiler:2.6.1")
 
     testImplementation("junit:junit:4.13.2")
