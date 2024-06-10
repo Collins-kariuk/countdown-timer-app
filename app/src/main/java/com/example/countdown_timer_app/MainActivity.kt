@@ -1,9 +1,11 @@
 package com.example.countdown_timer_app
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -53,11 +55,13 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.room.Room
 import com.example.countdown_timer_app.ui.theme.CountdowntimerappTheme
+import com.google.android.datatransport.Event
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
     private lateinit var eventDao: EventDao
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -116,7 +120,6 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
