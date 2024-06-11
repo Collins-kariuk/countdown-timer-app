@@ -83,16 +83,6 @@ class NewEventScreen : ComponentActivity() {
     }
 }
 
-@Entity(tableName = "events")
-data class Event(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    val eventName: String,
-    val eventLocation: String,
-    val eventNotes: String?,
-    val eventDate: LocalDate,
-    val eventTime: LocalTime
-)
-
 class LocalDateConverter {
     @RequiresApi(Build.VERSION_CODES.O)
     private val formatter = DateTimeFormatter.ISO_LOCAL_DATE
@@ -125,15 +115,6 @@ class LocalTimeConverter {
     fun timeToString(time: LocalTime?): String? {
         return time?.format(formatter)
     }
-}
-
-@Dao
-interface EventDao {
-    @Insert
-    suspend fun insert(event: Event)
-
-    @Query("SELECT * FROM events ORDER BY eventDate ASC")
-    suspend fun getAllEvents(): List<Event>
 }
 
 @Composable
@@ -481,12 +462,12 @@ fun NewEventScreenLayout(
     ) {
         NewEventScreenAppBar(onBack, {
             scope.launch {
-                eventDao.insert(Event(
+                eventDao.insertEvent(Event(
                     eventName = eventName,
                     eventLocation = "",
                     eventNotes = eventNote,
-                    eventDate = LocalDate.parse(eventDate),
-                    eventTime = LocalTime.parse(eventTime)
+                    eventDate = LocalDate.parse(eventDate).toString(),
+                    eventTime = LocalTime.parse(eventTime).toString()
                 ))
                 onStart()
             }
@@ -513,14 +494,13 @@ fun NewEventScreenLayout(
     }
 }
 
-// Mock implementation of EventDao for preview purposes
 class MockEventDao : EventDao {
-    override suspend fun insert(event: Event) {
-        // Mock implementation
+    override suspend fun getAllEvents(): List<Event> {
+        return listOf() // Return an empty list or mock data
     }
 
-    override suspend fun getAllEvents(): List<Event> {
-        return emptyList() // Mock implementation
+    override suspend fun insertEvent(event: Event) {
+        // Do nothing or log the event
     }
 }
 
