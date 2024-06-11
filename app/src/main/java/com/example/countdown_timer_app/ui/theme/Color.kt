@@ -1,4 +1,4 @@
-package com.example.compose
+package com.example.countdown_timer_app.ui.theme
 import androidx.compose.ui.graphics.Color
 
 val primaryLight = Color(0xFF6E5D00)
@@ -216,10 +216,3 @@ val surfaceContainerLowDarkHighContrast = Color(0xFF1E1B11)
 val surfaceContainerDarkHighContrast = Color(0xFF222015)
 val surfaceContainerHighDarkHighContrast = Color(0xFF2D2A1F)
 val surfaceContainerHighestDarkHighContrast = Color(0xFF383529)
-
-
-
-
-
-
-
