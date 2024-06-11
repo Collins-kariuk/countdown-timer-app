@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
+    id("kotlin-kapt")
 }
 
 android {
@@ -63,12 +64,12 @@ dependencies {
     implementation("androidx.compose.material3:material3:1.2.1")
     implementation("com.google.ar.sceneform:filament-android:1.17.1")
     implementation("androidx.wear.compose:compose-material:1.3.1")
+    implementation("androidx.compose.ui:ui-text-google-fonts:1.6.7")
+    implementation("com.google.android.datatransport:transport-api:3.2.0")
 
     // Implementations for the Room database.
     implementation("androidx.room:room-runtime:2.6.1")
-    implementation("androidx.compose.ui:ui-text-google-fonts:1.6.7")
-    implementation("com.google.android.datatransport:transport-api:3.2.0")
-    annotationProcessor("androidx.room:room-compiler:2.6.1")
+    kapt("androidx.room:room-compiler:2.6.1")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
