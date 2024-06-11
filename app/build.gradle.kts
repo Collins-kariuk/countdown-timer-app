@@ -2,7 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
-    id("kotlin-kapt")
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -63,7 +63,8 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.7.7")
     implementation("androidx.room:room-runtime:2.6.1")
     implementation("androidx.room:room-ktx:2.6.1")
-    implementation("androidx.wear.compose:compose-material:1.3.1") // Add this line
+    implementation("androidx.wear.compose:compose-material:1.3.1")
+    implementation(libs.androidx.ui.text.google.fonts) // Add this line
     ksp("androidx.room:room-compiler:2.6.1")
     implementation("androidx.compose.runtime:runtime-livedata:1.6.7")
 
