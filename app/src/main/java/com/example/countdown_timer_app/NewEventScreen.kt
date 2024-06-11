@@ -127,12 +127,6 @@ class LocalTimeConverter {
     }
 }
 
-@Database(entities = [Event::class], version = 1)
-@TypeConverters(LocalDateConverter::class, LocalTimeConverter::class)
-abstract class AppDatabase : RoomDatabase() {
-    abstract fun eventDao(): EventDao
-}
-
 @Dao
 interface EventDao {
     @Insert
