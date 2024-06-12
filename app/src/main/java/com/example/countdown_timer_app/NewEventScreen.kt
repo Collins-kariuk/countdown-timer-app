@@ -65,7 +65,7 @@ class NewEventScreen : ComponentActivity() {
                 ) {
                     NewEventScreenLayout(
                         onBack = { /* TODO: Implement back functionality */ },
-                        onStart = { /* TODO: Implement start functionality */ },
+                        onStart = { finish() }, // Navigate back to home
                         isStartEnabled = true,
                         eventDao = eventDao
                     )
