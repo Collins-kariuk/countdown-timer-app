@@ -16,8 +16,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -236,18 +234,6 @@ fun timeVisualTransformation(): VisualTransformation {
     }
 }
 
-/**
- * This composable function provides date and time pickers for the user to select the event's date
- * and time. The date picker is on the left side, and the time picker is on the right side.
- *
- * For the date picker, users have two input options:
- * - A text field at the top to manually enter a date in the format MM/DD/YYYY, which only accepts
- *   date inputs.
- *
- * For the time picker, users also have two input options:
- * - A text field at the top to manually enter a time in the format HH:MM, which only accepts time
- *   inputs.
- */
 @Composable
 fun DateAndTimeInput(
     selectedDate: String,
@@ -337,12 +323,6 @@ fun DateAndTimeInput(
     }
 }
 
-/**
- * This composable function provides input fields for the user to enter the event details,
- * including the event name, optional notes, and event location. The location field allows the
- * user to enter any location, without prompting for a specific place. The notes field is optional
- * by default.
- */
 @Composable
 fun EventDetailsInput(
     eventName: String,
