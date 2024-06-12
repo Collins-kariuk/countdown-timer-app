@@ -167,99 +167,71 @@ fun EditTextField(
     )
 }
 
-// Defines a function that returns a VisualTransformation for a date input field.
 fun dateVisualTransformation(): VisualTransformation {
-    // Returns a VisualTransformation object that transforms the input text visually.
     return VisualTransformation { text ->
-        // Trims the input text to a maximum length of 8 characters. This ensures the format
-        // MM/DD/YYYY.
-        val trimmed = if (text.text.length >= 8) text.text.substring(0..7)
-        else text.text
-
-        // StringBuilder is used to build the transformed text efficiently.
+        val trimmed = text.text.take(8) // Ensure text is at most 8 characters long
         val out = StringBuilder()
 
-        // Loop through each character in the trimmed text.
+        // Build the transformed text with slashes at the correct positions
         for (i in trimmed.indices) {
-            // Append the current character to the StringBuilder.
             out.append(trimmed[i])
-            // Insert a '/' after the second and fourth characters to match the MM/DD/YYYY format.
             if (i == 1 || i == 3) out.append('/')
         }
 
-        // Defines an offset mapping to correctly map cursor position between original and
-        // transformed text.
+        // Calculate the offset mapping for cursor position
         val offsetTranslator = object : OffsetMapping {
-            // Maps the cursor position from original to transformed text.
             override fun originalToTransformed(offset: Int): Int {
-                return if (offset <= 1) {
-                    offset // Before or at the first '/'
-                } else if (offset <= 3) {
-                    offset + 1 // Between the first '/' and second '/'
-                } else {
-                    offset + 2 // After the second '/'
+                return when {
+                    offset <= 1 -> offset
+                    offset <= 3 -> offset + 1
+                    offset <= 6 -> offset + 2
+                    else -> minOf(offset + 2, out.length)
                 }
             }
 
-            // Maps the cursor position from transformed to original text.
             override fun transformedToOriginal(offset: Int): Int {
-                return if (offset <= 2) {
-                    offset // Before or at the first '/'
-                } else if (offset <= 5) {
-                    offset - 1 // Between the first '/' and second '/'
-                } else {
-                    offset - 2 // After the second '/'
+                return when {
+                    offset <= 2 -> offset
+                    offset <= 5 -> offset - 1
+                    else -> offset - 2
                 }
             }
         }
 
-        // Returns a TransformedText object with the transformed text and the offset mapping.
+        // Return the transformed text and offset mapping
         TransformedText(text = AnnotatedString(out.toString()), offsetMapping = offsetTranslator)
     }
 }
 
-// Defines a function that returns a VisualTransformation for a time input field.
 fun timeVisualTransformation(): VisualTransformation {
-    // Returns a VisualTransformation object that transforms the input text visually.
     return VisualTransformation { text ->
-        // Trims the input text to a maximum length of 4 characters.
-        val trimmed = if (text.text.length >= 4) text.text.substring(0..3)
-        else text.text
-
-        // StringBuilder is used to build the transformed text efficiently.
+        val trimmed = text.text.take(4) // Ensure text is at most 4 characters long
         val out = StringBuilder()
 
-        // Loop through each character in the trimmed text.
+        // Build the transformed text with colon at the correct position
         for (i in trimmed.indices) {
-            // Append the current character to the StringBuilder.
             out.append(trimmed[i])
-            // Insert a ':' after the second character.
             if (i == 1) out.append(':')
         }
 
-        // Defines an offset mapping to correctly map cursor position between original and
-        // transformed text.
+        // Calculate the offset mapping for cursor position
         val offsetTranslator = object : OffsetMapping {
-            // Maps the cursor position from original to transformed text.
             override fun originalToTransformed(offset: Int): Int {
-                return if (offset <= 1) {
-                    offset // Before or at the ':'
-                } else {
-                    offset + 1 // After the ':'
+                return when {
+                    offset <= 1 -> offset
+                    else -> minOf(offset + 1, out.length)
                 }
             }
 
-            // Maps the cursor position from transformed to original text.
             override fun transformedToOriginal(offset: Int): Int {
-                return if (offset <= 2) {
-                    offset // Before or at the ':'
-                } else {
-                    offset - 1 // After the ':'
+                return when {
+                    offset <= 2 -> offset
+                    else -> offset - 1
                 }
             }
         }
 
-        // Returns a TransformedText object with the transformed text and the offset mapping.
+        // Return the transformed text and offset mapping
         TransformedText(text = AnnotatedString(out.toString()), offsetMapping = offsetTranslator)
     }
 }
@@ -454,14 +426,21 @@ fun NewEventScreenLayout(
     ) {
         NewEventScreenAppBar(onBack, {
             scope.launch {
-                eventDao.insertEvent(Event(
-                    eventName = eventName,
-                    eventLocation = "",
-                    eventNotes = eventNote,
-                    eventDate = LocalDate.parse(eventDate).toString(),
-                    eventTime = LocalTime.parse(eventTime).toString()
-                ))
-                onStart()
+                try {
+                    val formattedDate = LocalDate.parse(eventDate, DateTimeFormatter.ofPattern("MM/dd/yyyy"))
+                    val formattedTime = LocalTime.parse(eventTime, DateTimeFormatter.ofPattern("HH:mm"))
+                    eventDao.insertEvent(Event(
+                        eventName = eventName,
+                        eventLocation = "",
+                        eventNotes = eventNote,
+                        eventDate = formattedDate.toString(),
+                        eventTime = formattedTime.toString()
+                    ))
+                    onStart()
+                } catch (e: Exception) {
+                    // Handle the exception, show a message to the user
+                    e.printStackTrace()
+                }
             }
         }, isStartEnabled)
 
