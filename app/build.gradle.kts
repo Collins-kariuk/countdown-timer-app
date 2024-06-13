@@ -72,6 +72,14 @@ dependencies {
     implementation(libs.calendar) // Calendar
     implementation(libs.clock) // Clock
 
+    implementation(libs.androidx.material3)
+    implementation("androidx.compose.material3:material3-window-size-class:1.2.1")
+    implementation(libs.androidx.material3.adaptive.navigation.suite)
+
+    implementation(libs.androidx.material3.v100alpha15)
+    implementation(libs.androidx.material)
+    implementation("androidx.compose.material3:material3-window-size-class:1.0.0-alpha15")
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

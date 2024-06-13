@@ -120,7 +120,6 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreenAppBar(
     searchQuery: String, // Current search query text.
@@ -149,10 +148,6 @@ fun HomeScreenAppBar(
                 textStyle = MaterialTheme.typography.titleLarge.copy(
                     // Set the text color to be readable on the primary background.
                     color = MaterialTheme.colorScheme.onPrimary
-                ),
-                colors = TextFieldDefaults.textFieldColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    cursorColor = MaterialTheme.colorScheme.onPrimary
                 )
             )
         } else {

@@ -1,5 +1,6 @@
 package com.example.countdown_timer_app
 
+import android.app.TimePickerDialog
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -32,6 +33,7 @@ import androidx.room.TypeConverter
 import java.time.format.DateTimeFormatter
 import androidx.room.Room
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.platform.LocalContext
 import kotlinx.coroutines.launch
 import com.example.countdown_timer_app.ui.theme.CountdowntimerappTheme
 
@@ -239,12 +241,32 @@ fun DateAndTimeInput(
     selectedDate: String,
     onDateChanged: (String) -> Unit,
     selectedTime: String,
-    onTimeChanged: (String) -> Unit,
-    onDateButtonClick: () -> Unit,
-    onTimeButtonClick: () -> Unit
+    onTimeChanged: (String) -> Unit
 ) {
     var selectedPeriod by remember { mutableStateOf("AM") }
     var expanded by remember { mutableStateOf(false) }
+
+    val context = LocalContext.current
+
+    // Date picker dialog
+    val datePickerDialog = android.app.DatePickerDialog(
+        context,
+        { _, year, month, dayOfMonth ->
+            val date = "${month + 1}/$dayOfMonth/$year"
+            onDateChanged(date)
+        },
+        2024, 6, 13
+    )
+
+    // Time picker dialog
+    val timePickerDialog = TimePickerDialog(
+        context,
+        { _, hourOfDay, minute ->
+            val time = String.format("%02d:%02d", hourOfDay, minute)
+            onTimeChanged(time)
+        },
+        12, 0, false
+    )
 
     Column(modifier = Modifier.fillMaxWidth()) {
         Row(
@@ -254,7 +276,9 @@ fun DateAndTimeInput(
         ) {
             // Date picker button
             Button(
-                onClick = onDateButtonClick,
+                onClick = {
+                    datePickerDialog.show()
+                },
                 modifier = Modifier.weight(1f)
             ) {
                 Text("Set Date")
@@ -265,34 +289,12 @@ fun DateAndTimeInput(
             // Time Picker Section
             Row(modifier = Modifier.weight(1f)) {
                 Button(
-                    onClick = onTimeButtonClick,
+                    onClick = {
+                        timePickerDialog.show()
+                    },
                     modifier = Modifier.weight(1f)
                 ) {
                     Text("Set Time")
-                }
-                Spacer(modifier = Modifier.width(8.dp))
-                Box {
-                    Button(onClick = { expanded = true }) {
-                        Text(selectedPeriod)
-                    }
-                    DropdownMenu(
-                        expanded = expanded,
-                        onDismissRequest = { expanded = false }
-                    ) {
-                        DropdownMenuItem(
-                            text = { Text("AM") },
-                            onClick = {
-                                selectedPeriod = "AM"
-                                expanded = false
-                            })
-
-                        DropdownMenuItem(
-                            text = { Text("PM") },
-                            onClick = {
-                                selectedPeriod = "PM"
-                                expanded = false
-                            })
-                    }
                 }
             }
         }
@@ -416,9 +418,7 @@ fun NewEventScreenLayout(
             selectedDate = eventDate,
             onDateChanged = { eventDate = it },
             selectedTime = eventTime,
-            onTimeChanged = { eventTime = it },
-            onDateButtonClick = { /* Show date picker dialog */ },
-            onTimeButtonClick = { /* Show time picker dialog */ }
+            onTimeChanged = { eventTime = it }
         )
     }
 }
