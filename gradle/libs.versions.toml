@@ -1,9 +1,12 @@
 [versions]
 # ...
 activityCompose = "1.9.0"
+calendar = "1.3.0"
+clock = "1.3.0"
 composeBom = "2024.06.00"
 composeBomVersion = "2024.06.00"
 composeMaterial = "1.3.1"
+core = "1.3.0"
 coreKtx = "1.13.1"
 espressoCore = "3.5.1"
 junit = "4.13.2"
@@ -37,6 +40,9 @@ androidx-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
 androidx-ui-text-google-fonts = { group = "androidx.compose.ui", name = "ui-text-google-fonts", version.ref = "uiTextGoogleFonts" }
 androidx-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 androidx-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
+calendar = { module = "com.maxkeppeler.sheets-compose-dialogs:calendar", version.ref = "calendar" }
+clock = { module = "com.maxkeppeler.sheets-compose-dialogs:clock", version.ref = "clock" }
+core = { module = "com.maxkeppeler.sheets-compose-dialogs:core", version.ref = "core" }
 junit = { module = "junit:junit", version.ref = "junit" }
 
 [plugins]
