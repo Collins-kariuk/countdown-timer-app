@@ -239,7 +239,9 @@ fun DateAndTimeInput(
     selectedDate: String,
     onDateChanged: (String) -> Unit,
     selectedTime: String,
-    onTimeChanged: (String) -> Unit
+    onTimeChanged: (String) -> Unit,
+    onDateButtonClick: () -> Unit,
+    onTimeButtonClick: () -> Unit
 ) {
     var selectedPeriod by remember { mutableStateOf("AM") }
     var expanded by remember { mutableStateOf(false) }
@@ -250,72 +252,46 @@ fun DateAndTimeInput(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Date picker selection
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = "Please enter the event date:",
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
-                EditTextField(
-                    label = "MM/DD/YYYY",
-                    value = selectedDate,
-                    onValueChanged = onDateChanged,
-                    keyboardOptions = KeyboardOptions.Default.copy(
-                        keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Next
-                    ),
-                    visualTransformation = dateVisualTransformation()
-                )
+            // Date picker button
+            Button(
+                onClick = onDateButtonClick,
+                modifier = Modifier.weight(1f)
+            ) {
+                Text("Set Date")
             }
 
             Spacer(modifier = Modifier.width(16.dp))
 
             // Time Picker Section
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = "Please enter the event time:",
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(bottom = 8.dp)
-                )
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
+            Row(modifier = Modifier.weight(1f)) {
+                Button(
+                    onClick = onTimeButtonClick,
+                    modifier = Modifier.weight(1f)
                 ) {
-                    EditTextField(
-                        label = "HH:MM",
-                        value = selectedTime,
-                        onValueChanged = onTimeChanged,
-                        keyboardOptions = KeyboardOptions.Default.copy(
-                            keyboardType = KeyboardType.Number,
-                            imeAction = ImeAction.Done
-                        ),
-                        visualTransformation = timeVisualTransformation(),
-                        modifier = Modifier.weight(1f)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Box {
-                        Button(onClick = { expanded = true }) {
-                            Text(selectedPeriod)
-                        }
-                        DropdownMenu(
-                            expanded = expanded,
-                            onDismissRequest = { expanded = false }
-                        ) {
-                            DropdownMenuItem(
-                                text = { Text("AM") },
-                                onClick = {
-                                    selectedPeriod = "AM"
-                                    expanded = false
-                                })
+                    Text("Set Time")
+                }
+                Spacer(modifier = Modifier.width(8.dp))
+                Box {
+                    Button(onClick = { expanded = true }) {
+                        Text(selectedPeriod)
+                    }
+                    DropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text("AM") },
+                            onClick = {
+                                selectedPeriod = "AM"
+                                expanded = false
+                            })
 
-                            DropdownMenuItem(
-                                text = { Text("PM") },
-                                onClick = {
-                                    selectedPeriod = "PM"
-                                    expanded = false
-                                })
-                        }
+                        DropdownMenuItem(
+                            text = { Text("PM") },
+                            onClick = {
+                                selectedPeriod = "PM"
+                                expanded = false
+                            })
                     }
                 }
             }
@@ -440,7 +416,9 @@ fun NewEventScreenLayout(
             selectedDate = eventDate,
             onDateChanged = { eventDate = it },
             selectedTime = eventTime,
-            onTimeChanged = { eventTime = it }
+            onTimeChanged = { eventTime = it },
+            onDateButtonClick = { /* Show date picker dialog */ },
+            onTimeButtonClick = { /* Show time picker dialog */ }
         )
     }
 }

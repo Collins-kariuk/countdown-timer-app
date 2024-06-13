@@ -1,31 +1,19 @@
 [versions]
 # ...
 activityCompose = "1.9.0"
-calendar = "1.0.2"
-clock = "1.0.2"
-color = "1.0.2"
 composeBom = "2024.06.00"
 composeBomVersion = "2024.06.00"
 composeMaterial = "1.3.1"
-core = "1.0.2"
 coreKtx = "1.13.1"
-date_time = "1.0.2"
-duration = "1.0.2"
-emoji = "1.0.2"
 espressoCore = "3.5.1"
-info = "1.0.2"
-input = "1.0.2"
 junit = "4.13.2"
 junitVersion = "1.1.5"
 kotlin = "2.0.0"
 lifecycleRuntimeKtx = "2.8.2"
-list = "1.0.2"
 material3 = "1.2.1"
 navigationCompose = "2.7.7"
-option = "1.0.2"
 roomRuntime = "2.6.1"
 runtimeLivedata = "1.6.8"
-state = "1.0.2"
 uiTextGoogleFonts = "1.6.8"
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
@@ -49,19 +37,7 @@ androidx-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
 androidx-ui-text-google-fonts = { group = "androidx.compose.ui", name = "ui-text-google-fonts", version.ref = "uiTextGoogleFonts" }
 androidx-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 androidx-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
-calendar = { module = "com.maxkeppeler.sheets-compose-dialogs:calendar", version.ref = "calendar" }
-clock = { module = "com.maxkeppeler.sheets-compose-dialogs:clock", version.ref = "clock" }
-color = { module = "com.maxkeppeler.sheets-compose-dialogs:color", version.ref = "color" }
-core = { module = "com.maxkeppeler.sheets-compose-dialogs:core", version.ref = "core" }
-date_time = { module = "com.maxkeppeler.sheets-compose-dialogs:date_time", version.ref = "date_time" }
-duration = { module = "com.maxkeppeler.sheets-compose-dialogs:duration", version.ref = "duration" }
-emoji = { module = "com.maxkeppeler.sheets-compose-dialogs:emoji", version.ref = "emoji" }
-info = { module = "com.maxkeppeler.sheets-compose-dialogs:info", version.ref = "info" }
-input = { module = "com.maxkeppeler.sheets-compose-dialogs:input", version.ref = "input" }
 junit = { module = "junit:junit", version.ref = "junit" }
-list = { module = "com.maxkeppeler.sheets-compose-dialogs:list", version.ref = "list" }
-option = { module = "com.maxkeppeler.sheets-compose-dialogs:option", version.ref = "option" }
-state = { module = "com.maxkeppeler.sheets-compose-dialogs:state", version.ref = "state" }
 
 [plugins]
 # ...
