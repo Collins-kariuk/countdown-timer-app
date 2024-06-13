@@ -68,6 +68,19 @@ dependencies {
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.runtime.livedata)
 
+    implementation(libs.core) // CORE
+    implementation(libs.info) // INFO
+    implementation(libs.color) // COLOR
+    implementation(libs.calendar) // CALENDAR
+    implementation(libs.clock) // CLOCK
+    implementation(libs.date.time) // DATE TIME
+    implementation(libs.duration) // DURATION
+    implementation(libs.option) // OPTION
+    implementation(libs.list) // LIST
+    implementation(libs.input) // INPUT
+    implementation(libs.emoji) // EMOJI
+    implementation(libs.state) // STATE
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
