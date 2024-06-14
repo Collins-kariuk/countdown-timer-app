@@ -23,13 +23,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.text.input.ImeAction
 import androidx.wear.compose.material.ContentAlpha
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.AnnotatedString
-import androidx.compose.ui.text.input.OffsetMapping
-import androidx.compose.ui.text.input.TransformedText
 import androidx.compose.ui.text.input.VisualTransformation
 import java.time.LocalDate
 import java.time.LocalTime
-import androidx.room.TypeConverter
 import java.time.format.DateTimeFormatter
 import androidx.room.Room
 import androidx.compose.runtime.rememberCoroutineScope
@@ -72,40 +68,6 @@ class NewEventScreen : ComponentActivity() {
                 }
             }
         }
-    }
-}
-
-class LocalDateConverter {
-    @RequiresApi(Build.VERSION_CODES.O)
-    private val formatter = DateTimeFormatter.ISO_LOCAL_DATE
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    @TypeConverter
-    fun fromString(value: String?): LocalDate? {
-        return value?.let { LocalDate.parse(it, formatter) }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    @TypeConverter
-    fun dateToString(date: LocalDate?): String? {
-        return date?.format(formatter)
-    }
-}
-
-class LocalTimeConverter {
-    @RequiresApi(Build.VERSION_CODES.O)
-    private val formatter = DateTimeFormatter.ISO_LOCAL_TIME
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    @TypeConverter
-    fun fromString(value: String?): LocalTime? {
-        return value?.let { LocalTime.parse(it, formatter) }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    @TypeConverter
-    fun timeToString(time: LocalTime?): String? {
-        return time?.format(formatter)
     }
 }
 
@@ -165,75 +127,6 @@ fun EditTextField(
         visualTransformation = visualTransformation,
         modifier = modifier.fillMaxWidth(),
     )
-}
-
-fun dateVisualTransformation(): VisualTransformation {
-    return VisualTransformation { text ->
-        val trimmed = text.text.take(8) // Ensure text is at most 8 characters long
-        val out = StringBuilder()
-
-        // Build the transformed text with slashes at the correct positions
-        for (i in trimmed.indices) {
-            out.append(trimmed[i])
-            if (i == 1 || i == 3) out.append('/')
-        }
-
-        // Calculate the offset mapping for cursor position
-        val offsetTranslator = object : OffsetMapping {
-            override fun originalToTransformed(offset: Int): Int {
-                return when {
-                    offset <= 1 -> offset
-                    offset <= 3 -> offset + 1
-                    offset <= 6 -> offset + 2
-                    else -> minOf(offset + 2, out.length)
-                }
-            }
-
-            override fun transformedToOriginal(offset: Int): Int {
-                return when {
-                    offset <= 2 -> offset
-                    offset <= 5 -> offset - 1
-                    else -> offset - 2
-                }
-            }
-        }
-
-        // Return the transformed text and offset mapping
-        TransformedText(text = AnnotatedString(out.toString()), offsetMapping = offsetTranslator)
-    }
-}
-
-fun timeVisualTransformation(): VisualTransformation {
-    return VisualTransformation { text ->
-        val trimmed = text.text.take(4) // Ensure text is at most 4 characters long
-        val out = StringBuilder()
-
-        // Build the transformed text with colon at the correct position
-        for (i in trimmed.indices) {
-            out.append(trimmed[i])
-            if (i == 1) out.append(':')
-        }
-
-        // Calculate the offset mapping for cursor position
-        val offsetTranslator = object : OffsetMapping {
-            override fun originalToTransformed(offset: Int): Int {
-                return when {
-                    offset <= 1 -> offset
-                    else -> minOf(offset + 1, out.length)
-                }
-            }
-
-            override fun transformedToOriginal(offset: Int): Int {
-                return when {
-                    offset <= 2 -> offset
-                    else -> offset - 1
-                }
-            }
-        }
-
-        // Return the transformed text and offset mapping
-        TransformedText(text = AnnotatedString(out.toString()), offsetMapping = offsetTranslator)
-    }
 }
 
 @Composable
