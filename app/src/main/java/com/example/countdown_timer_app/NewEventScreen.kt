@@ -136,10 +136,10 @@ fun DateAndTimeInput(
     selectedTime: String,
     onTimeChanged: (String) -> Unit
 ) {
-    var selectedPeriod by remember { mutableStateOf("AM") }
-    var expanded by remember { mutableStateOf(false) }
-
     val context = LocalContext.current
+    // State variables for date and time
+    var dateButtonText by remember { mutableStateOf("Set Date") }
+    var timeButtonText by remember { mutableStateOf("Set Time") }
 
     // Date picker dialog
     val datePickerDialog = android.app.DatePickerDialog(
@@ -147,6 +147,7 @@ fun DateAndTimeInput(
         { _, year, month, dayOfMonth ->
             val date = "${month + 1}/$dayOfMonth/$year"
             onDateChanged(date)
+            dateButtonText = date
         },
         2024, 6, 13
     )
@@ -157,6 +158,7 @@ fun DateAndTimeInput(
         { _, hourOfDay, minute ->
             val time = String.format("%02d:%02d", hourOfDay, minute)
             onTimeChanged(time)
+            timeButtonText = time
         },
         12, 0, false
     )
@@ -174,7 +176,7 @@ fun DateAndTimeInput(
                 },
                 modifier = Modifier.weight(1f)
             ) {
-                Text("Set Date")
+                Text(dateButtonText)
             }
 
             Spacer(modifier = Modifier.width(16.dp))
@@ -187,7 +189,7 @@ fun DateAndTimeInput(
                     },
                     modifier = Modifier.weight(1f)
                 ) {
-                    Text("Set Time")
+                    Text(timeButtonText)
                 }
             }
         }
