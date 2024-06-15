@@ -60,7 +60,7 @@ class NewEventScreen : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     NewEventScreenLayout(
-                        onBack = { /* TODO: Implement back functionality */ },
+                        onBack = { finish() }, // Navigate back to the previous screen
                         onStart = { finish() }, // Navigate back to home
                         isStartEnabled = true,
                         eventDao = eventDao
@@ -266,6 +266,7 @@ fun NewEventScreenLayout(
 ) {
     val scope = rememberCoroutineScope()
     var eventName by remember { mutableStateOf("") }
+    var eventLocation by remember { mutableStateOf("") }
     var eventDate by remember { mutableStateOf("") }
     var eventTime by remember { mutableStateOf("") }
     var eventNote by remember { mutableStateOf("") }
@@ -280,11 +281,17 @@ fun NewEventScreenLayout(
         NewEventScreenAppBar(onBack, {
             scope.launch {
                 try {
-                    val formattedDate = LocalDate.parse(eventDate, DateTimeFormatter.ofPattern("MM/dd/yyyy"))
-                    val formattedTime = LocalTime.parse(eventTime, DateTimeFormatter.ofPattern("HH:mm"))
+                    val formattedDate = LocalDate.parse(
+                        eventDate,
+                        DateTimeFormatter.ofPattern("MM/dd/yyyy")
+                    )
+                    val formattedTime = LocalTime.parse(
+                        eventTime,
+                        DateTimeFormatter.ofPattern("HH:mm")
+                    )
                     eventDao.insertEvent(Event(
                         eventName = eventName,
-                        eventLocation = "",
+                        eventLocation = eventLocation,
                         eventNotes = eventNote,
                         eventDate = formattedDate.toString(),
                         eventTime = formattedTime.toString()
@@ -303,8 +310,8 @@ fun NewEventScreenLayout(
         EventDetailsInput(
             eventName = eventName,
             onEventNameChange = { eventName = it },
-            eventLocation = "",
-            onEventLocationChange = { /* handle location change if necessary */ },
+            eventLocation = eventLocation,
+            onEventLocationChange = { eventLocation = it },
             eventNotes = eventNote,
             onEventNotesChange = { eventNote = it }
         )
