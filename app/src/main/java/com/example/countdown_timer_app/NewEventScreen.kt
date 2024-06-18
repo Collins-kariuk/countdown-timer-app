@@ -34,36 +34,42 @@ import kotlinx.coroutines.launch
 import com.example.countdown_timer_app.ui.theme.CountdowntimerappTheme
 
 class NewEventScreen : ComponentActivity() {
+    // Declare a variable for accessing the EventDao
     private lateinit var eventDao: EventDao
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Makes the app content extend into window insets areas like status and navigation bars.
+
+        // Makes the app content extend into window insets areas like status and navigation bars
         enableEdgeToEdge()
 
         // Initialize the database and get the DAO
         val db = Room.databaseBuilder(
             applicationContext,
-            AppDatabase::class.java, "event-database"
+            AppDatabase::class.java, // Database class
+            "event-database" // Name of the database
         ).build()
+
+        // Assign the DAO to the eventDao variable
         eventDao = db.eventDao()
 
         setContent {
+            // Apply the app theme
             CountdowntimerappTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier
-                        .fillMaxSize() // Fills the maximum size of the parent.
-                        // Adds padding equivalent to the height of the status bar.,
+                        .fillMaxSize() // Fills the maximum size of the parent
+                        // Adds padding equivalent to the height of the status bar
                         .statusBarsPadding(),
-                    color = MaterialTheme.colorScheme.background
+                    color = MaterialTheme.colorScheme.background // Set the background color
                 ) {
                     NewEventScreenLayout(
                         onBack = { finish() }, // Navigate back to the previous screen
                         onStart = { finish() }, // Navigate back to home
-                        isStartEnabled = true,
-                        eventDao = eventDao
+                        isStartEnabled = true, // Enable the start button
+                        eventDao = eventDao // Pass the event DAO to the layout
                     )
                 }
             }
