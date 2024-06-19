@@ -77,37 +77,45 @@ class NewEventScreen : ComponentActivity() {
     }
 }
 
+// A composable function that defines an AppBar with a back button and a start button.
 @Composable
 fun NewEventScreenAppBar(onBack: () -> Unit, onStart: () -> Unit, isStartEnabled: Boolean) {
     Row(
+        // A Row composable to arrange its children horizontally.
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxWidth() // Makes the Row fill the maximum width of its parent.
+            // Sets the background color to the primary color from the theme.
             .background(MaterialTheme.colorScheme.primary)
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        verticalAlignment = Alignment.CenterVertically,
+            .padding(horizontal = 16.dp, vertical = 8.dp), // Adds horizontal and vertical padding.
+        verticalAlignment = Alignment.CenterVertically, // Aligns children vertically in the center.
+        // Arranges children with space between them.
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        // Back Icon
+        // Back Icon Button
         IconButton(
-            onClick = onBack,
-            modifier = Modifier.size(24.dp)
+            onClick = onBack, // Sets the onClick action to the onBack function.
+            modifier = Modifier.size(24.dp) // Sets the size of the IconButton to 24 dp.
         ) {
             Icon(
+                // Sets the icon to an auto-mirrored back arrow.
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "Back",
+                contentDescription = "Back", // Provides a content description for accessibility.
+                // Sets the icon color to onPrimary from the theme.
                 tint = MaterialTheme.colorScheme.onPrimary
             )
         }
-        // Start Icon
+        // Start Icon Button
         IconButton(
-            onClick = onStart,
-            modifier = Modifier.size(24.dp),
-            enabled = isStartEnabled
+            onClick = onStart, // Sets the onClick action to the onStart function.
+            modifier = Modifier.size(24.dp), // Sets the size of the IconButton to 24 dp.
+            enabled = isStartEnabled // Enables or disables the button based on isStartEnabled.
         ) {
             Icon(
-                imageVector = Icons.Filled.PlayArrow,
-                contentDescription = "Start",
+                imageVector = Icons.Filled.PlayArrow, // Sets the icon to a play arrow.
+                contentDescription = "Start", // Provides a content description for accessibility.
+                // Sets the icon color to onPrimary if enabled.
                 tint = if (isStartEnabled) MaterialTheme.colorScheme.onPrimary
+                // Sets the icon color to a disabled state if not enabled.
                 else MaterialTheme.colorScheme.onSurface.copy(alpha = ContentAlpha.disabled)
             )
         }
