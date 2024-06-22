@@ -11,7 +11,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,7 +20,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.text.input.ImeAction
-import androidx.wear.compose.material.ContentAlpha
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import java.time.LocalDate
@@ -79,7 +77,7 @@ class NewEventScreen : ComponentActivity() {
 
 // A composable function that defines an AppBar with a back button and a start button.
 @Composable
-fun NewEventScreenAppBar(onBack: () -> Unit, onStart: () -> Unit, isStartEnabled: Boolean) {
+fun NewEventScreenAppBar(onBack: () -> Unit) {
     Row(
         // A Row composable to arrange its children horizontally.
         modifier = Modifier
@@ -102,21 +100,6 @@ fun NewEventScreenAppBar(onBack: () -> Unit, onStart: () -> Unit, isStartEnabled
                 contentDescription = "Back", // Provides a content description for accessibility.
                 // Sets the icon color to onPrimary from the theme.
                 tint = MaterialTheme.colorScheme.onPrimary
-            )
-        }
-        // Start Icon Button
-        IconButton(
-            onClick = onStart, // Sets the onClick action to the onStart function.
-            modifier = Modifier.size(24.dp), // Sets the size of the IconButton to 24 dp.
-            enabled = isStartEnabled // Enables or disables the button based on isStartEnabled.
-        ) {
-            Icon(
-                imageVector = Icons.Filled.PlayArrow, // Sets the icon to a play arrow.
-                contentDescription = "Start", // Provides a content description for accessibility.
-                // Sets the icon color to onPrimary if enabled.
-                tint = if (isStartEnabled) MaterialTheme.colorScheme.onPrimary
-                // Sets the icon color to a disabled state if not enabled.
-                else MaterialTheme.colorScheme.onSurface.copy(alpha = ContentAlpha.disabled)
             )
         }
     }
@@ -292,31 +275,7 @@ fun NewEventScreenLayout(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ) {
-        NewEventScreenAppBar(onBack, {
-            scope.launch {
-                try {
-                    val formattedDate = LocalDate.parse(
-                        eventDate,
-                        DateTimeFormatter.ofPattern("MM/dd/yyyy")
-                    )
-                    val formattedTime = LocalTime.parse(
-                        eventTime,
-                        DateTimeFormatter.ofPattern("HH:mm")
-                    )
-                    eventDao.insertEvent(Event(
-                            eventName = eventName,
-                            eventLocation = eventLocation,
-                            eventNotes = eventNote,
-                            eventDate = formattedDate.toString(),
-                            eventTime = formattedTime.toString()
-                        ))
-                    onStart()
-                } catch (e: Exception) {
-                    // Handle the exception, show a message to the user
-                    e.printStackTrace()
-                }
-            }
-        }, isStartEnabled)
+        NewEventScreenAppBar(onBack)
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -329,13 +288,47 @@ fun NewEventScreenLayout(
             eventNotes = eventNote,
             onEventNotesChange = { eventNote = it }
         )
-
         DateAndTimeInput(
             selectedDate = eventDate,
             onDateChanged = { eventDate = it },
             selectedTime = eventTime,
             onTimeChanged = { eventTime = it }
         )
+        Spacer(modifier = Modifier.height(16.dp))
+        // Done Button
+        Button(
+            onClick = {
+                scope.launch {
+                    try {
+                        val formattedDate = LocalDate.parse(
+                            eventDate,
+                            DateTimeFormatter.ofPattern("MM/dd/yyyy")
+                        )
+                        val formattedTime = LocalTime.parse(
+                            eventTime,
+                            DateTimeFormatter.ofPattern("HH:mm")
+                        )
+                        eventDao.insertEvent(
+                            Event(
+                                eventName = eventName,
+                                eventLocation = eventLocation,
+                                eventNotes = eventNote,
+                                eventDate = formattedDate.toString(),
+                                eventTime = formattedTime.toString()
+                            )
+                        )
+                        onStart()
+                    } catch (e: Exception) {
+                        // Handle the exception, show a message to the user
+                        e.printStackTrace()
+                    }
+                }
+            },
+            enabled = isStartEnabled,
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        ) {
+            Text("Done")
+        }
     }
 }
 
