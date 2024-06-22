@@ -128,9 +128,7 @@ fun EditTextField(
 
 @Composable
 fun DateAndTimeInput(
-    selectedDate: String,
     onDateChanged: (String) -> Unit,
-    selectedTime: String,
     onTimeChanged: (String) -> Unit
 ) {
     val context = LocalContext.current
@@ -289,9 +287,7 @@ fun NewEventScreenLayout(
             onEventNotesChange = { eventNote = it }
         )
         DateAndTimeInput(
-            selectedDate = eventDate,
             onDateChanged = { eventDate = it },
-            selectedTime = eventTime,
             onTimeChanged = { eventTime = it }
         )
         Spacer(modifier = Modifier.height(16.dp))
