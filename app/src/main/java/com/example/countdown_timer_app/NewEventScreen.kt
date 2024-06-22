@@ -159,11 +159,11 @@ fun DateAndTimeInput(
     val datePickerDialog = android.app.DatePickerDialog(
         context,
         { _, year, month, dayOfMonth ->
-            val date = "${month + 1}/$dayOfMonth/$year"
+            val date = "${String.format("%02d", month + 1)}/${String.format("%02d", dayOfMonth)}/$year"
             onDateChanged(date)
             dateButtonText = date
         },
-        2024, 6, 13
+        2024, 6, 22
     )
 
     // Time picker dialog
@@ -304,12 +304,12 @@ fun NewEventScreenLayout(
                         DateTimeFormatter.ofPattern("HH:mm")
                     )
                     eventDao.insertEvent(Event(
-                        eventName = eventName,
-                        eventLocation = eventLocation,
-                        eventNotes = eventNote,
-                        eventDate = formattedDate.toString(),
-                        eventTime = formattedTime.toString()
-                    ))
+                            eventName = eventName,
+                            eventLocation = eventLocation,
+                            eventNotes = eventNote,
+                            eventDate = formattedDate.toString(),
+                            eventTime = formattedTime.toString()
+                        ))
                     onStart()
                 } catch (e: Exception) {
                     // Handle the exception, show a message to the user
@@ -343,7 +343,6 @@ class MockEventDao : EventDao {
     override suspend fun getAllEvents(): List<Event> {
         return listOf() // Return an empty list or mock data
     }
-
     override suspend fun insertEvent(event: Event) {
         // Do nothing or log the event
     }
