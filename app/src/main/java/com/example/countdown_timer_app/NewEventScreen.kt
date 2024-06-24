@@ -107,21 +107,24 @@ fun NewEventScreenAppBar(onBack: () -> Unit) {
 
 @Composable
 fun EditTextField(
-    label: String,
-    value: String,
-    onValueChanged: (String) -> Unit,
-    modifier: Modifier = Modifier,
+    label: String, // The label for the text field
+    value: String, // The current text value of the text field
+    onValueChanged: (String) -> Unit, // A lambda function to handle changes to the text value
+    modifier: Modifier = Modifier, // Modifier for styling the text field
+    // Keyboard options to specify keyboard behavior and input type
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    singleLine: Boolean = true,
+    singleLine: Boolean = true, // Whether the text field is single line or multi-line
+    // Visual transformation to apply to the text (e.g., password masking)
     visualTransformation: VisualTransformation = VisualTransformation.None
 ) {
     TextField(
-        value = value,
-        onValueChange = onValueChanged,
-        label = { Text(label) },
-        singleLine = singleLine,
-        keyboardOptions = keyboardOptions,
-        visualTransformation = visualTransformation,
+        value = value, // The current text value of the text field
+        onValueChange = onValueChanged, // A lambda function to handle changes to the text value
+        label = { Text(label) }, // The label to display when the text field is empty
+        singleLine = singleLine, // Whether the text field is single line or multi-line
+        keyboardOptions = keyboardOptions, // To specify keyboard behavior and input type
+        visualTransformation = visualTransformation, // Visual transformation to apply to the text
+        // Modifier to style the text field, making it fill the maximum width of its parent
         modifier = modifier.fillMaxWidth(),
     )
 }
