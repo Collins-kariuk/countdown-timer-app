@@ -131,37 +131,42 @@ fun EditTextField(
 
 @Composable
 fun DateAndTimeInput(
-    onDateChanged: (String) -> Unit,
-    onTimeChanged: (String) -> Unit
+    onDateChanged: (String) -> Unit, // Lambda function to handle changes to the date
+    onTimeChanged: (String) -> Unit // Lambda function to handle changes to the time
 ) {
-    val context = LocalContext.current
-    // State variables for date and time
+    val context = LocalContext.current // Get the current context
+    // State variables for the text displayed on the date and time buttons
     var dateButtonText by remember { mutableStateOf("Set Date") }
     var timeButtonText by remember { mutableStateOf("Set Time") }
 
-    // Date picker dialog
+    // Create a date picker dialog
     val datePickerDialog = android.app.DatePickerDialog(
         context,
         { _, year, month, dayOfMonth ->
+            // Format the selected date and update the button text and state
             val date = "${String.format("%02d", month + 1)}/${String.format("%02d", dayOfMonth)}/$year"
             onDateChanged(date)
             dateButtonText = date
         },
-        2024, 6, 22
+        2024, 6, 22 // Set the default date to June 22, 2024
     )
 
-    // Time picker dialog
+    // Create a time picker dialog
     val timePickerDialog = TimePickerDialog(
         context,
         { _, hourOfDay, minute ->
+            // Format the selected time and update the button text and state
             val time = String.format("%02d:%02d", hourOfDay, minute)
             onTimeChanged(time)
             timeButtonText = time
         },
+        // Set the default time to 12:00 PM and use 24-hour format
         12, 0, false
     )
 
+    // Create a column to hold the date and time buttons
     Column(modifier = Modifier.fillMaxWidth()) {
+        // Create a row to arrange the date and time buttons horizontally
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -170,24 +175,24 @@ fun DateAndTimeInput(
             // Date picker button
             Button(
                 onClick = {
-                    datePickerDialog.show()
+                    datePickerDialog.show() // Show the date picker dialog when button is clicked
                 },
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f) // Make the button take up equal space
             ) {
-                Text(dateButtonText)
+                Text(dateButtonText) // Display the current date text on the button
             }
 
-            Spacer(modifier = Modifier.width(16.dp))
+            Spacer(modifier = Modifier.width(16.dp)) // Add space between the date and time buttons
 
-            // Time Picker Section
+            // Time picker section
             Row(modifier = Modifier.weight(1f)) {
                 Button(
                     onClick = {
-                        timePickerDialog.show()
+                        timePickerDialog.show() // Show time picker dialog when button is clicked
                     },
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f) // Make the button take up equal space
                 ) {
-                    Text(timeButtonText)
+                    Text(timeButtonText) // Display the current time text on the button
                 }
             }
         }
