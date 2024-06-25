@@ -75,7 +75,7 @@ class NewEventScreen : ComponentActivity() {
     }
 }
 
-// A composable function that defines an AppBar with a back button and a start button.
+// A composable function that defines an AppBar with a back button.
 @Composable
 fun NewEventScreenAppBar(onBack: () -> Unit) {
     Row(
@@ -105,6 +105,7 @@ fun NewEventScreenAppBar(onBack: () -> Unit) {
     }
 }
 
+// A composable function to create a text field with various options.
 @Composable
 fun EditTextField(
     label: String, // The label for the text field
@@ -129,6 +130,7 @@ fun EditTextField(
     )
 }
 
+// A composable function to create a date and time picker.
 @Composable
 fun DateAndTimeInput(
     onDateChanged: (String) -> Unit, // Lambda function to handle changes to the date
@@ -199,6 +201,7 @@ fun DateAndTimeInput(
     }
 }
 
+// A composable function to create input fields for event details.
 @Composable
 fun EventDetailsInput(
     eventName: String,
@@ -228,7 +231,8 @@ fun EventDetailsInput(
             onValueChanged = onEventNameChange,
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Text,
-                imeAction = ImeAction.Next)
+                imeAction = ImeAction.Next
+            )
         )
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -240,9 +244,9 @@ fun EventDetailsInput(
             onValueChanged = onEventLocationChange,
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Text,
-                imeAction = ImeAction.Next)
+                imeAction = ImeAction.Next
+            )
         )
-
         Spacer(modifier = Modifier.height(16.dp))
 
         // Event Notes (Optional)
@@ -252,13 +256,15 @@ fun EventDetailsInput(
             onValueChanged = onEventNotesChange,
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Text,
-                imeAction = ImeAction.Next),
+                imeAction = ImeAction.Next
+            ),
             singleLine = false,
             modifier = Modifier.height(100.dp)
         )
     }
 }
 
+// A composable function to create the layout for the New Event screen.
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NewEventScreenLayout(
@@ -267,12 +273,12 @@ fun NewEventScreenLayout(
     isStartEnabled: Boolean,
     eventDao: EventDao
 ) {
-    val scope = rememberCoroutineScope()
-    var eventName by remember { mutableStateOf("") }
-    var eventLocation by remember { mutableStateOf("") }
-    var eventDate by remember { mutableStateOf("") }
-    var eventTime by remember { mutableStateOf("") }
-    var eventNote by remember { mutableStateOf("") }
+    val scope = rememberCoroutineScope() // Create a coroutine scope for launching coroutines
+    var eventName by remember { mutableStateOf("") } // State for event name
+    var eventLocation by remember { mutableStateOf("") } // State for event location
+    var eventDate by remember { mutableStateOf("") } // State for event date
+    var eventTime by remember { mutableStateOf("") } // State for event time
+    var eventNote by remember { mutableStateOf("") } // State for event notes
 
     Column(
         modifier = Modifier
@@ -321,7 +327,7 @@ fun NewEventScreenLayout(
                                 eventTime = formattedTime.toString()
                             )
                         )
-                        onStart()
+                        onStart() // Navigate back to home screen
                     } catch (e: Exception) {
                         // Handle the exception, show a message to the user
                         e.printStackTrace()
@@ -350,7 +356,6 @@ class MockEventDao : EventDao {
 @Composable
 fun NewEventScreenPreview() {
     val mockEventDao = MockEventDao()
-
     CountdowntimerappTheme {
         NewEventScreenLayout(
             onBack = { /* TODO: Implement back functionality */ },
