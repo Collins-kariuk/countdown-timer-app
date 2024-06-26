@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import android.content.Intent
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
@@ -65,12 +66,18 @@ class NewEventScreen : ComponentActivity() {
                 ) {
                     NewEventScreenLayout(
                         onBack = { finish() }, // Navigate back to the previous screen
-                        onStart = { finish() }, // Navigate back to home
+                        onStart = { navigateToHomeScreen() }, // Navigate back to home
                         eventDao = eventDao // Pass the event DAO to the layout
                     )
                 }
             }
         }
+    }
+
+    private fun navigateToHomeScreen() {
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 }
 
