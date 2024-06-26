@@ -109,7 +109,6 @@ class MainActivity : ComponentActivity() {
                                 // Navigate back to the previous screen ("home")
                                 onBack = { navController.popBackStack() },
                                 onStart = { /* TODO: Implement start functionality */ },
-                                isStartEnabled = true, // Enable the start button.
                                 eventDao = eventDao
                             )
                         }

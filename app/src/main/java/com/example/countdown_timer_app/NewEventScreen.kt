@@ -66,7 +66,6 @@ class NewEventScreen : ComponentActivity() {
                     NewEventScreenLayout(
                         onBack = { finish() }, // Navigate back to the previous screen
                         onStart = { finish() }, // Navigate back to home
-                        isStartEnabled = true, // Enable the start button
                         eventDao = eventDao // Pass the event DAO to the layout
                     )
                 }
@@ -270,7 +269,6 @@ fun EventDetailsInput(
 fun NewEventScreenLayout(
     onBack: () -> Unit,
     onStart: () -> Unit,
-    isStartEnabled: Boolean,
     eventDao: EventDao
 ) {
     val scope = rememberCoroutineScope() // Create a coroutine scope for launching coroutines
@@ -279,6 +277,13 @@ fun NewEventScreenLayout(
     var eventDate by remember { mutableStateOf("") } // State for event date
     var eventTime by remember { mutableStateOf("") } // State for event time
     var eventNote by remember { mutableStateOf("") } // State for event notes
+
+    // State variables for form validation
+    val isFormValid by remember {
+        derivedStateOf {
+            eventName.isNotBlank() && eventDate.isNotBlank() && eventTime.isNotBlank()
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -308,33 +313,35 @@ fun NewEventScreenLayout(
         // Done Button
         Button(
             onClick = {
-                scope.launch {
-                    try {
-                        val formattedDate = LocalDate.parse(
-                            eventDate,
-                            DateTimeFormatter.ofPattern("MM/dd/yyyy")
-                        )
-                        val formattedTime = LocalTime.parse(
-                            eventTime,
-                            DateTimeFormatter.ofPattern("HH:mm")
-                        )
-                        eventDao.insertEvent(
-                            Event(
-                                eventName = eventName,
-                                eventLocation = eventLocation,
-                                eventNotes = eventNote,
-                                eventDate = formattedDate.toString(),
-                                eventTime = formattedTime.toString()
+                if (isFormValid) {
+                    scope.launch {
+                        try {
+                            val formattedDate = LocalDate.parse(
+                                eventDate,
+                                DateTimeFormatter.ofPattern("MM/dd/yyyy")
                             )
-                        )
-                        onStart() // Navigate back to home screen
-                    } catch (e: Exception) {
-                        // Handle the exception, show a message to the user
-                        e.printStackTrace()
+                            val formattedTime = LocalTime.parse(
+                                eventTime,
+                                DateTimeFormatter.ofPattern("HH:mm")
+                            )
+                            eventDao.insertEvent(
+                                Event(
+                                    eventName = eventName,
+                                    eventLocation = eventLocation,
+                                    eventNotes = eventNote,
+                                    eventDate = formattedDate.toString(),
+                                    eventTime = formattedTime.toString()
+                                )
+                            )
+                            onStart() // Navigate back to home screen
+                        } catch (e: Exception) {
+                            // Handle the exception, show a message to the user
+                            e.printStackTrace()
+                        }
                     }
                 }
             },
-            enabled = isStartEnabled,
+            enabled = isFormValid,
             modifier = Modifier.align(Alignment.CenterHorizontally)
         ) {
             Text("Done")
@@ -360,7 +367,6 @@ fun NewEventScreenPreview() {
         NewEventScreenLayout(
             onBack = { /* TODO: Implement back functionality */ },
             onStart = { /* TODO: Implement start functionality */ },
-            isStartEnabled = true,
             eventDao = mockEventDao
         )
     }
