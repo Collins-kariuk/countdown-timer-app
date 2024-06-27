@@ -1,6 +1,7 @@
 package com.example.countdown_timer_app
 
 import android.app.TimePickerDialog
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -18,17 +19,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
-import android.content.Intent
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import androidx.room.Room
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.platform.LocalContext
 import kotlinx.coroutines.launch
 import com.example.countdown_timer_app.ui.theme.CountdowntimerappTheme
 
@@ -64,20 +63,20 @@ class NewEventScreen : ComponentActivity() {
                         .statusBarsPadding(),
                     color = MaterialTheme.colorScheme.background // Set the background color
                 ) {
+                    val context = LocalContext.current
                     NewEventScreenLayout(
                         onBack = { finish() }, // Navigate back to the previous screen
-                        onStart = { navigateToHomeScreen() }, // Navigate back to home
+                        onStart = {
+                            // Navigate back to home screen using context
+                            val intent = Intent(context, MainActivity::class.java)
+                            context.startActivity(intent)
+                            finish() // Ensure the current activity is finished
+                        },
                         eventDao = eventDao // Pass the event DAO to the layout
                     )
                 }
             }
         }
-    }
-
-    private fun navigateToHomeScreen() {
-        val intent = Intent(this, MainActivity::class.java)
-        startActivity(intent)
-        finish()
     }
 }
 
@@ -370,10 +369,15 @@ class MockEventDao : EventDao {
 @Composable
 fun NewEventScreenPreview() {
     val mockEventDao = MockEventDao()
+    val context = LocalContext.current
     CountdowntimerappTheme {
         NewEventScreenLayout(
             onBack = { /* TODO: Implement back functionality */ },
-            onStart = { /* TODO: Implement start functionality */ },
+            onStart = {
+                // Simulate navigation to home screen in preview
+                val intent = Intent(context, MainActivity::class.java)
+                context.startActivity(intent)
+            },
             eventDao = mockEventDao
         )
     }
