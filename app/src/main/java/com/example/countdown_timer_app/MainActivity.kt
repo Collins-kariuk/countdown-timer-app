@@ -212,9 +212,11 @@ fun HomeScreenLayout(
     onAddEventClicked: () -> Unit,
     eventDao: EventDao
 ) {
-    var events by remember { mutableStateOf(listOf<Event>()) }
+    var events by remember { mutableStateOf(listOf<Event>()) } // State to hold the list of events
+    // Create a coroutine scope which is used to launch coroutines in this composable
     val scope = rememberCoroutineScope()
 
+    // Launch a coroutine to fetch events from the database
     LaunchedEffect(Unit) {
         scope.launch {
             events = eventDao.getAllEvents()
@@ -245,11 +247,13 @@ fun HomeScreenLayout(
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.Start
             ) {
-                NewEventButton(onAddEventClicked)
+                NewEventButton(onAddEventClicked) // New Event Button
+
                 Spacer(modifier = Modifier.height(16.dp))
 
+                // Display the list of events
                 LazyVerticalGrid(
-                    columns = GridCells.Fixed(2), // Adjust the number of columns as needed
+                    columns = GridCells.Fixed(2),
                     contentPadding = PaddingValues(16.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -277,8 +281,14 @@ fun EventCard(event: Event) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(text = event.eventName, style = MaterialTheme.typography.bodyLarge)
+
             Spacer(modifier = Modifier.height(8.dp))
-            Text(text = "${event.eventDate} ${event.eventTime}", style = MaterialTheme.typography.bodySmall)
+
+            Text(
+                text = "${event.eventDate} ${event.eventTime}",
+                style = MaterialTheme.typography.bodySmall
+            )
+
             event.eventNotes?.let {
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(text = it, style = MaterialTheme.typography.bodySmall)
