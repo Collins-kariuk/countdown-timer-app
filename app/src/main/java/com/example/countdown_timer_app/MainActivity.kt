@@ -56,6 +56,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.room.Room
 import com.example.countdown_timer_app.ui.theme.CountdowntimerappTheme
 import kotlinx.coroutines.launch
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 
 class MainActivity : ComponentActivity() {
     private lateinit var eventDao: EventDao
@@ -108,7 +112,8 @@ class MainActivity : ComponentActivity() {
                             NewEventScreenLayout(
                                 // Navigate back to the previous screen ("home")
                                 onBack = { navController.popBackStack() },
-                                onStart = { /* TODO: Implement start functionality */ },
+                                // Navigate back to home screen
+                                onStart = { navController.navigate("home") },
                                 eventDao = eventDao
                             )
                         }
@@ -212,14 +217,17 @@ fun HomeScreenLayout(
     onAddEventClicked: () -> Unit,
     eventDao: EventDao
 ) {
-    var events by remember { mutableStateOf(listOf<Event>()) } // State to hold the list of events
-    // Create a coroutine scope which is used to launch coroutines in this composable
+    var events by remember { mutableStateOf(listOf<Event>()) }
     val scope = rememberCoroutineScope()
 
-    // Launch a coroutine to fetch events from the database
     LaunchedEffect(Unit) {
         scope.launch {
-            events = eventDao.getAllEvents()
+            events = eventDao.getAllEvents().sortedByDescending {
+                LocalDateTime.of(
+                    LocalDate.parse(it.eventDate),
+                    LocalTime.parse(it.eventTime)
+                )
+            }
         }
     }
 
@@ -247,13 +255,11 @@ fun HomeScreenLayout(
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.Start
             ) {
-                NewEventButton(onAddEventClicked) // New Event Button
-
+                NewEventButton(onAddEventClicked)
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // Display the list of events
                 LazyVerticalGrid(
-                    columns = GridCells.Fixed(2),
+                    columns = GridCells.Fixed(2), // Adjust the number of columns as needed
                     contentPadding = PaddingValues(16.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -281,14 +287,8 @@ fun EventCard(event: Event) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(text = event.eventName, style = MaterialTheme.typography.bodyLarge)
-
             Spacer(modifier = Modifier.height(8.dp))
-
-            Text(
-                text = "${event.eventDate} ${event.eventTime}",
-                style = MaterialTheme.typography.bodySmall
-            )
-
+            Text(text = "${event.eventDate} ${event.eventTime}", style = MaterialTheme.typography.bodySmall)
             event.eventNotes?.let {
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(text = it, style = MaterialTheme.typography.bodySmall)
