@@ -124,44 +124,49 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+/**
+ * Composable function that displays the AppBar for the Home screen.
+ *
+ * The AppBar contains a search field that toggles between search mode and a title
+ * depending on the current state. When in search mode, the search field allows the user
+ * to input a search query. There is also an icon button to toggle the search mode.
+ *
+ * @param searchQuery The current search query text.
+ * @param onSearchQueryChange Callback to update the search query text.
+ * @param isSearching Flag to determine if the user is in search mode.
+ * @param onSearchToggle Callback to toggle the search mode.
+ */
 @Composable
 fun HomeScreenAppBar(
-    searchQuery: String, // Current search query text.
-    onSearchQueryChange: (String) -> Unit, // Callback to update the search query text.
-    isSearching: Boolean, // Flag to determine if the user is in search mode.
-    onSearchToggle: () -> Unit // Callback to toggle the search mode.
+    searchQuery: String,
+    onSearchQueryChange: (String) -> Unit,
+    isSearching: Boolean,
+    onSearchToggle: () -> Unit
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth() // Make the Row fill the maximum available width.
-            // Set background color to primary color of the theme.
-            .background(MaterialTheme.colorScheme.primary)
-            // Apply horizontal and vertical padding to the Row.
-            .padding(horizontal = 16.dp, vertical = 8.dp),
-        // Align children vertically to the center of the row.
-        verticalAlignment = Alignment.CenterVertically,
+            .background(MaterialTheme.colorScheme.primary) // Set background color to primary color of the theme.
+            .padding(horizontal = 16.dp, vertical = 8.dp), // Apply horizontal and vertical padding to the Row.
+        verticalAlignment = Alignment.CenterVertically, // Align children vertically to the center of the row.
         horizontalArrangement = Arrangement.SpaceBetween // Space children evenly within the Row.
     ) {
         if (isSearching) { // Check if the user is in search mode.
             TextField(
                 value = searchQuery, // Set the current value of the TextField to the search query.
                 onValueChange = onSearchQueryChange, // Update search query when the text changes.
-                // Placeholder text when TextField is empty.
-                placeholder = { Text("Search...") },
+                placeholder = { Text("Search...") }, // Placeholder text when TextField is empty.
                 modifier = Modifier.weight(1f), // Make TextField take up remaining space in Row.
                 textStyle = MaterialTheme.typography.titleLarge.copy(
-                    // Set the text color to be readable on the primary background.
-                    color = MaterialTheme.colorScheme.onPrimary
+                    color = MaterialTheme.colorScheme.onPrimary // Set the text color to be readable on the primary background.
                 )
             )
         } else {
             Text(
                 text = stringResource(R.string.App_name), // Display the app name text.
                 style = MaterialTheme.typography.titleLarge, // Apply typography style to the text.
-                // Set the text color for readability on the primary background.
-                color = MaterialTheme.colorScheme.onPrimary,
-                // Make the text take up the remaining space in the Row.
-                modifier = Modifier.weight(1f),
+                color = MaterialTheme.colorScheme.onPrimary, // Set the text color for readability on the primary background.
+                modifier = Modifier.weight(1f), // Make the text take up the remaining space in the Row.
                 textAlign = TextAlign.Center // Center the text horizontally within its container.
             )
         }
@@ -170,16 +175,12 @@ fun HomeScreenAppBar(
 
         IconButton(
             onClick = onSearchToggle, // Set action to perform when the search button is clicked.
-            // Apply a size modifier to set the height and width of the IconButton.
-            modifier = Modifier.size(24.dp)
+            modifier = Modifier.size(24.dp) // Apply a size modifier to set the height and width of the IconButton.
         ) {
             Icon(
-                // Change icon based on search mode.
-                imageVector = if (isSearching) Icons.Filled.Close else Icons.Filled.Search,
-                // Set content description for accessibility.
-                contentDescription = if (isSearching) "Close" else "Search",
-                // Set the icon color for contrast against the primary background.
-                tint = MaterialTheme.colorScheme.onPrimary
+                imageVector = if (isSearching) Icons.Filled.Close else Icons.Filled.Search, // Change icon based on search mode.
+                contentDescription = if (isSearching) "Close" else "Search", // Set content description for accessibility.
+                tint = MaterialTheme.colorScheme.onPrimary // Set the icon color for contrast against the primary background.
             )
         }
     }
