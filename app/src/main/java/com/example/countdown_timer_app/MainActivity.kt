@@ -185,6 +185,15 @@ fun HomeScreenAppBar(
     }
 }
 
+/**
+ * Composable function that displays a button for adding a new event.
+ *
+ * This function creates a styled button that, when clicked, triggers a lambda function
+ * to handle the addition of a new event. The button is styled with rounded corners, a border,
+ * and text indicating its purpose.
+ *
+ * @param onAddEventClicked Lambda function that is executed when the button is clicked.
+ */
 @Composable
 fun NewEventButton(onAddEventClicked: () -> Unit) {
     // Defines clickable button to add new event
@@ -199,8 +208,7 @@ fun NewEventButton(onAddEventClicked: () -> Unit) {
         border = BorderStroke(1.dp, Color.Black)
     ) {
         Text(
-            // Sets the text to display on the Button
-            text = stringResource(R.string.New_event_String),
+            text = stringResource(R.string.New_event_String), // Text to display on the Button
             fontSize = 18.sp, // Sets the font size of the text to 18 scalable pixels (sp)
             color = Color.Black // Sets the color of the text to black
         )
