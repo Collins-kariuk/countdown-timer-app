@@ -215,6 +215,21 @@ fun NewEventButton(onAddEventClicked: () -> Unit) {
     }
 }
 
+/**
+ * Composable function that defines the layout for the Home Screen.
+ *
+ * This function sets up the Home Screen layout which includes an AppBar for searching, a button for
+ * adding a new event, and a grid to display the list of events. The events are fetched from the
+ * provided EventDao and are displayed in a LazyVerticalGrid, sorted by the most recent event at the
+ * top.
+ *
+ * @param searchQuery The current search query text.
+ * @param onSearchQueryChange Callback to update the search query text.
+ * @param isSearching Flag to determine if the user is in search mode.
+ * @param onSearchToggle Callback to toggle the search mode.
+ * @param onAddEventClicked Callback to handle the addition of a new event.
+ * @param eventDao Data Access Object for accessing event data from the database.
+ */
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeScreenLayout(
@@ -225,11 +240,15 @@ fun HomeScreenLayout(
     onAddEventClicked: () -> Unit,
     eventDao: EventDao
 ) {
+    // State to hold the list of events
     var events by remember { mutableStateOf(listOf<Event>()) }
+    // Coroutine scope for launching coroutines
     val scope = rememberCoroutineScope()
 
+    // Effect that runs when the composable is first displayed
     LaunchedEffect(Unit) {
         scope.launch {
+            // Fetch events from the database and sort them by the most recent
             events = eventDao.getAllEvents().sortedByDescending {
                 LocalDateTime.of(
                     LocalDate.parse(it.eventDate),
@@ -239,7 +258,9 @@ fun HomeScreenLayout(
         }
     }
 
+    // Scaffold to provide the basic structure of the screen
     Scaffold(
+        // Define the top app bar
         topBar = {
             HomeScreenAppBar(
                 searchQuery = searchQuery,
@@ -249,29 +270,34 @@ fun HomeScreenLayout(
             )
         }
     ) { innerPadding ->
+        // Surface container for the content
         Surface(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .background(MaterialTheme.colorScheme.tertiaryContainer),
-            color = MaterialTheme.colorScheme.background
+                .fillMaxSize() // Make the Surface fill the maximum size of the parent
+                .padding(innerPadding) // Apply padding to avoid overlapping with the app bar
+                .background(MaterialTheme.colorScheme.tertiaryContainer), // Set background color
+            color = MaterialTheme.colorScheme.background // Set the background color
         ) {
             Column(
                 modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.Start
+                    .fillMaxSize() // Make the Column fill the maximum size of the parent
+                    .padding(16.dp), // Apply padding around the content
+                verticalArrangement = Arrangement.Top, // Align children to the top
+                horizontalAlignment = Alignment.Start // Align children to the start (left)
             ) {
+                // Button to add a new event
                 NewEventButton(onAddEventClicked)
-                Spacer(modifier = Modifier.height(16.dp))
 
+                Spacer(modifier = Modifier.height(16.dp)) // Spacer to add vertical space
+
+                // LazyVerticalGrid to display events in a grid
                 LazyVerticalGrid(
-                    columns = GridCells.Fixed(2), // Adjust the number of columns as needed
-                    contentPadding = PaddingValues(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                    horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    columns = GridCells.Fixed(2), // Set the number of columns to 2
+                    contentPadding = PaddingValues(16.dp), // Apply padding around the grid
+                    verticalArrangement = Arrangement.spacedBy(16.dp), // Space between rows
+                    horizontalArrangement = Arrangement.spacedBy(16.dp) // Space between columns
                 ) {
+                    // Iterate over the events and display each event in a card
                     items(events) { event ->
                         EventCard(event)
                     }
