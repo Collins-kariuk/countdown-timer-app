@@ -219,9 +219,9 @@ fun NewEventButton(onAddEventClicked: () -> Unit) {
  * Composable function that defines the layout for the Home Screen.
  *
  * This function sets up the Home Screen layout which includes an AppBar for searching, a button for
- * adding a new event, and a grid to display the list of events. The events are fetched from the
- * provided EventDao and are displayed in a LazyVerticalGrid, sorted by the most recent event at the
- * top.
+ * adding a new event, and a grid to display the list of events.
+ * The events are fetched from the provided EventDao and are displayed in a LazyVerticalGrid, sorted
+ * by the most recent event at the top.
  *
  * @param searchQuery The current search query text.
  * @param onSearchQueryChange Callback to update the search query text.
@@ -307,24 +307,47 @@ fun HomeScreenLayout(
     }
 }
 
+/**
+ * Composable function to display an event card.
+ *
+ * This function creates a card-like UI component to display details of an event.
+ * It includes the event name, event date and time, and optionally, event notes.
+ * The card has a fixed size, rounded corners, a border, and a background color.
+ *
+ * @param event The event to display, containing event name, date, time, and optionally notes.
+ */
 @Composable
 fun EventCard(event: Event) {
+    // Surface container to create a card-like appearance
     Surface(
-        modifier = Modifier.size(150.dp),
-        shape = RoundedCornerShape(8.dp),
+        modifier = Modifier.size(150.dp), // Set the size of the Surface to 150 dp
+        shape = RoundedCornerShape(8.dp), // Shape of Surface with rounded corners of 8 dp radius
+        // Border around the Surface with a width of 1 dp and gray color
         border = BorderStroke(1.dp, Color.Gray),
+        // Background color of the Surface from the theme's surface color
         color = MaterialTheme.colorScheme.surface
     ) {
         Column(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier.padding(16.dp), // Add padding inside the column
+            // Arrange children vertically centered within the Column
             verticalArrangement = Arrangement.Center,
+            // Align children horizontally centered within the Column
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            // Text to display the event name with bodyLarge style from the theme's typography
             Text(text = event.eventName, style = MaterialTheme.typography.bodyLarge)
+            // Spacer to add vertical space of 8 dp between elements
             Spacer(modifier = Modifier.height(8.dp))
-            Text(text = "${event.eventDate} ${event.eventTime}", style = MaterialTheme.typography.bodySmall)
+            // Text to display the event date & time with bodySmall style from theme's typography
+            Text(
+                text = "${event.eventDate} ${event.eventTime}",
+                style = MaterialTheme.typography.bodySmall
+            )
+            // Check if event notes are not null, then display them
             event.eventNotes?.let {
+                // Spacer to add vertical space of 8 dp between elements
                 Spacer(modifier = Modifier.height(8.dp))
+                // Text to display the event notes with bodySmall style from the theme's typography
                 Text(text = it, style = MaterialTheme.typography.bodySmall)
             }
         }
