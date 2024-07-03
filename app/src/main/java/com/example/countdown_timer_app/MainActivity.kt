@@ -102,7 +102,7 @@ class MainActivity : ComponentActivity() {
                                 onSearchQueryChange = { searchQuery = it },
                                 isSearching = isSearching,
                                 onSearchToggle = { isSearching = !isSearching },
-                                // Navigate to "new_event" screen when the add event button is clicked.
+                                // Navigate to "new_event" screen when add event button is clicked.
                                 onAddEventClicked = { navController.navigate("new_event") },
                                 eventDao = eventDao
                             )
