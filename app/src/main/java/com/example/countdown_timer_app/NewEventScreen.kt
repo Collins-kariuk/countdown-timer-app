@@ -356,11 +356,18 @@ fun NewEventScreenLayout(
 }
 
 class MockEventDao : EventDao {
+    private val events = mutableListOf<Event>()
+
     override suspend fun getAllEvents(): List<Event> {
-        return listOf() // Return an empty list or mock data
+        return events
     }
+
     override suspend fun insertEvent(event: Event) {
-        // Do nothing or log the event
+        events.add(event)
+    }
+
+    override suspend fun deleteEvent(event: Event) {
+        events.remove(event)
     }
 }
 
