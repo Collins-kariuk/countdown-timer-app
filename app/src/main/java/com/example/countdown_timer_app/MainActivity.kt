@@ -51,10 +51,12 @@ import androidx.navigation.compose.rememberNavController
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.room.Room
 import com.example.countdown_timer_app.ui.theme.CountdowntimerappTheme
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -240,15 +242,11 @@ fun HomeScreenLayout(
     onAddEventClicked: () -> Unit,
     eventDao: EventDao
 ) {
-    // State to hold the list of events
     var events by remember { mutableStateOf(listOf<Event>()) }
-    // Coroutine scope for launching coroutines
     val scope = rememberCoroutineScope()
 
-    // Effect that runs when the composable is first displayed
     LaunchedEffect(Unit) {
         scope.launch {
-            // Fetch events from the database and sort them by the most recent
             events = eventDao.getAllEvents().sortedByDescending {
                 LocalDateTime.of(
                     LocalDate.parse(it.eventDate),
@@ -258,9 +256,7 @@ fun HomeScreenLayout(
         }
     }
 
-    // Scaffold to provide the basic structure of the screen
     Scaffold(
-        // Define the top app bar
         topBar = {
             HomeScreenAppBar(
                 searchQuery = searchQuery,
@@ -270,36 +266,34 @@ fun HomeScreenLayout(
             )
         }
     ) { innerPadding ->
-        // Surface container for the content
         Surface(
             modifier = Modifier
-                .fillMaxSize() // Make the Surface fill the maximum size of the parent
-                .padding(innerPadding) // Apply padding to avoid overlapping with the app bar
-                .background(MaterialTheme.colorScheme.tertiaryContainer), // Set background color
-            color = MaterialTheme.colorScheme.background // Set the background color
+                .fillMaxSize()
+                .padding(innerPadding)
+                .background(MaterialTheme.colorScheme.tertiaryContainer),
+            color = MaterialTheme.colorScheme.background
         ) {
             Column(
                 modifier = Modifier
-                    .fillMaxSize() // Make the Column fill the maximum size of the parent
-                    .padding(16.dp), // Apply padding around the content
-                verticalArrangement = Arrangement.Top, // Align children to the top
-                horizontalAlignment = Alignment.Start // Align children to the start (left)
+                    .fillMaxSize()
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.Start
             ) {
-                // Button to add a new event
                 NewEventButton(onAddEventClicked)
+                Spacer(modifier = Modifier.height(16.dp))
 
-                Spacer(modifier = Modifier.height(16.dp)) // Spacer to add vertical space
-
-                // LazyVerticalGrid to display events in a grid
                 LazyVerticalGrid(
-                    columns = GridCells.Fixed(2), // Set the number of columns to 2
-                    contentPadding = PaddingValues(16.dp), // Apply padding around the grid
-                    verticalArrangement = Arrangement.spacedBy(16.dp), // Space between rows
-                    horizontalArrangement = Arrangement.spacedBy(16.dp) // Space between columns
+                    columns = GridCells.Fixed(2), // Adjust the number of columns as needed
+                    contentPadding = PaddingValues(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    // Iterate over the events and display each event in a card
                     items(events) { event ->
-                        EventCard(event)
+                        EventCard(event, eventDao, scope) {
+                            // Refresh the events list after deletion
+                            events = events.filter { it != event }
+                        }
                     }
                 }
             }
@@ -315,40 +309,44 @@ fun HomeScreenLayout(
  * The card has a fixed size, rounded corners, a border, and a background color.
  *
  * @param event The event to display, containing event name, date, time, and optionally notes.
+ * @param eventDao The Data Access Object for the event to handle deletion.
+ * @param scope The CoroutineScope to launch deletion in.
+ * @param onDelete Callback to refresh the event list after deletion.
  */
 @Composable
-fun EventCard(event: Event) {
-    // Surface container to create a card-like appearance
+fun EventCard(
+    event: Event,
+    eventDao: EventDao,
+    scope: CoroutineScope,
+    onDelete: () -> Unit
+) {
     Surface(
-        modifier = Modifier.size(150.dp), // Set the size of the Surface to 150 dp
-        shape = RoundedCornerShape(8.dp), // Shape of Surface with rounded corners of 8 dp radius
-        // Border around the Surface with a width of 1 dp and gray color
+        modifier = Modifier.size(150.dp),
+        shape = RoundedCornerShape(8.dp),
         border = BorderStroke(1.dp, Color.Gray),
-        // Background color of the Surface from the theme's surface color
         color = MaterialTheme.colorScheme.surface
     ) {
         Column(
-            modifier = Modifier.padding(16.dp), // Add padding inside the column
-            // Arrange children vertically centered within the Column
+            modifier = Modifier.padding(16.dp),
             verticalArrangement = Arrangement.Center,
-            // Align children horizontally centered within the Column
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            // Text to display the event name with bodyLarge style from the theme's typography
             Text(text = event.eventName, style = MaterialTheme.typography.bodyLarge)
-            // Spacer to add vertical space of 8 dp between elements
             Spacer(modifier = Modifier.height(8.dp))
-            // Text to display the event date & time with bodySmall style from theme's typography
-            Text(
-                text = "${event.eventDate} ${event.eventTime}",
-                style = MaterialTheme.typography.bodySmall
-            )
-            // Check if event notes are not null, then display them
+            Text(text = "${event.eventDate} ${event.eventTime}", style = MaterialTheme.typography.bodySmall)
             event.eventNotes?.let {
-                // Spacer to add vertical space of 8 dp between elements
                 Spacer(modifier = Modifier.height(8.dp))
-                // Text to display the event notes with bodySmall style from the theme's typography
                 Text(text = it, style = MaterialTheme.typography.bodySmall)
+            }
+            IconButton(
+                onClick = {
+                    scope.launch {
+                        eventDao.deleteEvent(event)
+                        onDelete()
+                    }
+                }
+            ) {
+                Icon(imageVector = Icons.Default.Delete, contentDescription = "Delete Event")
             }
         }
     }
