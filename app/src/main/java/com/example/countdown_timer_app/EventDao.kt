@@ -1,6 +1,7 @@
 package com.example.countdown_timer_app
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 
@@ -11,4 +12,7 @@ interface EventDao {
 
     @Insert
     suspend fun insertEvent(event: Event)
+
+    @Delete
+    suspend fun deleteEvent(event: Event)
 }
