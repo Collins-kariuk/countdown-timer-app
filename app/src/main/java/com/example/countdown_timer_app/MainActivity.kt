@@ -79,41 +79,30 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             CountdowntimerappTheme {
-                // Declare a mutable state for the search query text.
                 var searchQuery by remember { mutableStateOf("") }
-                // Declare a mutable state to determine if the user is in search mode.
                 var isSearching by remember { mutableStateOf(false) }
-                // Create a NavController for navigation between composables.
                 val navController = rememberNavController()
 
                 Surface(
                     modifier = Modifier
-                        .fillMaxSize() // Make the Surface fill the maximum size of the parent.
-                        .statusBarsPadding(), // Add padding equivalent to height of the status bar.
-                    color = MaterialTheme.colorScheme.background // Set the background color.
+                        .fillMaxSize()
+                        .statusBarsPadding(),
+                    color = MaterialTheme.colorScheme.background
                 ) {
-                    // Define a NavHost to manage navigation between composables.
                     NavHost(navController = navController, startDestination = "home") {
-                        // Define the "home" composable destination.
                         composable("home") {
-                            // Display home screen layout with search & event adding functionalities
                             HomeScreenLayout(
                                 searchQuery = searchQuery,
                                 onSearchQueryChange = { searchQuery = it },
                                 isSearching = isSearching,
                                 onSearchToggle = { isSearching = !isSearching },
-                                // Navigate to "new_event" screen when add event button is clicked.
                                 onAddEventClicked = { navController.navigate("new_event") },
                                 eventDao = eventDao
                             )
                         }
-                        // Define the "new_event" composable destination.
                         composable("new_event") {
-                            // Display new event screen layout with back and start functionalities.
                             NewEventScreenLayout(
-                                // Navigate back to the previous screen ("home")
                                 onBack = { navController.popBackStack() },
-                                // Navigate back to home screen
                                 onStart = { navController.navigate("home") },
                                 eventDao = eventDao
                             )
@@ -146,42 +135,42 @@ fun HomeScreenAppBar(
 ) {
     Row(
         modifier = Modifier
-            .fillMaxWidth() // Make the Row fill the maximum available width.
-            .background(MaterialTheme.colorScheme.primary) // Set background color to primary color of the theme.
-            .padding(horizontal = 16.dp, vertical = 8.dp), // Apply horizontal and vertical padding to the Row.
-        verticalAlignment = Alignment.CenterVertically, // Align children vertically to the center of the row.
-        horizontalArrangement = Arrangement.SpaceBetween // Space children evenly within the Row.
+            .fillMaxWidth()
+            .background(MaterialTheme.colorScheme.primary)
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        if (isSearching) { // Check if the user is in search mode.
+        if (isSearching) {
             TextField(
-                value = searchQuery, // Set the current value of the TextField to the search query.
-                onValueChange = onSearchQueryChange, // Update search query when the text changes.
-                placeholder = { Text("Search...") }, // Placeholder text when TextField is empty.
-                modifier = Modifier.weight(1f), // Make TextField take up remaining space in Row.
+                value = searchQuery,
+                onValueChange = onSearchQueryChange,
+                placeholder = { Text("Search...") },
+                modifier = Modifier.weight(1f),
                 textStyle = MaterialTheme.typography.titleLarge.copy(
-                    color = MaterialTheme.colorScheme.onPrimary // Set the text color to be readable on the primary background.
+                    color = MaterialTheme.colorScheme.onPrimary
                 )
             )
         } else {
             Text(
-                text = stringResource(R.string.App_name), // Display the app name text.
-                style = MaterialTheme.typography.titleLarge, // Apply typography style to the text.
-                color = MaterialTheme.colorScheme.onPrimary, // Set the text color for readability on the primary background.
-                modifier = Modifier.weight(1f), // Make the text take up the remaining space in the Row.
-                textAlign = TextAlign.Center // Center the text horizontally within its container.
+                text = stringResource(R.string.App_name),
+                style = MaterialTheme.typography.titleLarge,
+                color = MaterialTheme.colorScheme.onPrimary,
+                modifier = Modifier.weight(1f),
+                textAlign = TextAlign.Center
             )
         }
 
-        Spacer(modifier = Modifier.width(8.dp)) // Adds space between the text and the icon.
+        Spacer(modifier = Modifier.width(8.dp))
 
         IconButton(
-            onClick = onSearchToggle, // Set action to perform when the search button is clicked.
-            modifier = Modifier.size(24.dp) // Apply a size modifier to set the height and width of the IconButton.
+            onClick = onSearchToggle,
+            modifier = Modifier.size(24.dp)
         ) {
             Icon(
-                imageVector = if (isSearching) Icons.Filled.Close else Icons.Filled.Search, // Change icon based on search mode.
-                contentDescription = if (isSearching) "Close" else "Search", // Set content description for accessibility.
-                tint = MaterialTheme.colorScheme.onPrimary // Set the icon color for contrast against the primary background.
+                imageVector = if (isSearching) Icons.Filled.Close else Icons.Filled.Search,
+                contentDescription = if (isSearching) "Close" else "Search",
+                tint = MaterialTheme.colorScheme.onPrimary
             )
         }
     }
@@ -198,21 +187,18 @@ fun HomeScreenAppBar(
  */
 @Composable
 fun NewEventButton(onAddEventClicked: () -> Unit) {
-    // Defines clickable button to add new event
     Button(
-        onClick = { onAddEventClicked() }, // Lambda that's executed when the Button is clicked
+        onClick = { onAddEventClicked() },
         modifier = Modifier
             .size(110.dp)
-            .padding(start = 8.dp, top = 8.dp), // Position button below the AppBar correctly
-        // Sets the shape of the Button corners to be rounded with a 20 dp radius
+            .padding(start = 8.dp, top = 8.dp),
         shape = RoundedCornerShape(20.dp),
-        // Adds a border around the Button with a width of 1 dp and black color
         border = BorderStroke(1.dp, Color.Black)
     ) {
         Text(
-            text = stringResource(R.string.New_event_String), // Text to display on the Button
-            fontSize = 18.sp, // Sets the font size of the text to 18 scalable pixels (sp)
-            color = Color.Black // Sets the color of the text to black
+            text = stringResource(R.string.New_event_String),
+            fontSize = 18.sp,
+            color = Color.Black
         )
     }
 }
@@ -256,6 +242,12 @@ fun HomeScreenLayout(
         }
     }
 
+    val filteredEvents = if (searchQuery.isNotBlank()) {
+        events.filter { it.eventName.contains(searchQuery, ignoreCase = true) }
+    } else {
+        events
+    }
+
     Scaffold(
         topBar = {
             HomeScreenAppBar(
@@ -289,9 +281,8 @@ fun HomeScreenLayout(
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    items(events) { event ->
+                    items(filteredEvents) { event ->
                         EventCard(event, eventDao, scope) {
-                            // Refresh the events list after deletion
                             events = events.filter { it != event }
                         }
                     }
@@ -365,7 +356,7 @@ fun HomeScreenPreview() {
             onSearchQueryChange = { searchQuery = it },
             isSearching = isSearching,
             onSearchToggle = { isSearching = !isSearching },
-            onAddEventClicked = { /* TODO: Implement add event functionality */ },
+            onAddEventClicked = { /* TODO: Implement add event functionality. See main class */ },
             eventDao = MockEventDao()
         )
     }
