@@ -1,13 +1,21 @@
 package com.example.countdown_timer_app
 
+import android.app.Activity
 import android.app.TimePickerDialog
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import android.util.Log
+import android.widget.Toast
+import androidx.compose.ui.platform.LocalContext
+import com.google.android.gms.common.api.Status
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -22,7 +30,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import java.time.LocalDate
 import java.time.LocalTime
@@ -228,6 +235,16 @@ fun EventDetailsInput(
         Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS))
         .build(context)
 
+    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val place = Autocomplete.getPlaceFromIntent(result.data!!)
+            onEventLocationChange(place.address ?: "")
+        } else if (result.resultCode == Activity.RESULT_CANCELED) {
+            val status = Autocomplete.getStatusFromIntent(result.data!!)
+            handleAutocompleteError(context, status)
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -243,9 +260,7 @@ fun EventDetailsInput(
 
         // Event Name
         EditTextField(
-            label = stringResource(R.string
-
-                .event_name),
+            label = stringResource(R.string.event_name),
             value = eventName,
             onValueChanged = onEventNameChange,
             keyboardOptions = KeyboardOptions.Default.copy(
@@ -257,6 +272,10 @@ fun EventDetailsInput(
         Spacer(modifier = Modifier.height(16.dp))
 
         // Event Location
+        Button(onClick = { launcher.launch(autocompleteIntent) }) {
+            Text("Select Location")
+        }
+
         EditTextField(
             label = stringResource(R.string.event_location),
             value = eventLocation,
@@ -264,8 +283,10 @@ fun EventDetailsInput(
             keyboardOptions = KeyboardOptions.Default.copy(
                 keyboardType = KeyboardType.Text,
                 imeAction = ImeAction.Next
-            )
+            ),
+            modifier = Modifier.fillMaxWidth()
         )
+
         Spacer(modifier = Modifier.height(16.dp))
 
         // Event Notes (Optional)
@@ -281,6 +302,12 @@ fun EventDetailsInput(
             modifier = Modifier.height(100.dp)
         )
     }
+}
+
+fun handleAutocompleteError(context: Context, status: Status) {
+    val errorMessage = status.statusMessage ?: "Unknown error"
+    Log.e("AutocompleteError", errorMessage)
+    Toast.makeText(context, "Error: $errorMessage", Toast.LENGTH_LONG).show()
 }
 
 // A composable function to create the layout for the New Event screen.
