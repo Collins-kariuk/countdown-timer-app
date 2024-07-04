@@ -332,12 +332,6 @@ fun fetchSuggestions(
     }
 }
 
-fun handleAutocompleteError(context: Context, status: Status) {
-    val errorMessage = status.statusMessage ?: "Unknown error"
-    Log.e("AutocompleteError", errorMessage)
-    Toast.makeText(context, "Error: $errorMessage", Toast.LENGTH_LONG).show()
-}
-
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NewEventScreenLayout(
