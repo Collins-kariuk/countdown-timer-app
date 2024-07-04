@@ -30,6 +30,7 @@ import java.time.format.DateTimeFormatter
 import androidx.room.Room
 import kotlinx.coroutines.launch
 import com.example.countdown_timer_app.ui.theme.CountdowntimerappTheme
+import java.util.*
 
 class NewEventScreen : ComponentActivity() {
     // Declare a variable for accessing the EventDao
@@ -156,7 +157,9 @@ fun DateAndTimeInput(
             dateButtonText = date
         },
         2024, 6, 22 // Set the default date to June 22, 2024
-    )
+    ).apply {
+        datePicker.minDate = Calendar.getInstance().timeInMillis // Set minimum date to current date
+    }
 
     // Create a time picker dialog
     val timePickerDialog = TimePickerDialog(
@@ -231,7 +234,9 @@ fun EventDetailsInput(
 
         // Event Name
         EditTextField(
-            label = stringResource(R.string.event_name),
+            label = stringResource(R.string
+
+                .event_name),
             value = eventName,
             onValueChanged = onEventNameChange,
             keyboardOptions = KeyboardOptions.Default.copy(
