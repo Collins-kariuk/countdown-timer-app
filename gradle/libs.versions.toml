@@ -1,5 +1,6 @@
 [versions]
 # ...
+accompanistPermissions = "0.19.0"
 activityCompose = "1.9.0"
 calendar = "1.3.0"
 clock = "1.3.0"
@@ -18,10 +19,12 @@ material3 = "1.2.1"
 material3AdaptiveNavigationSuite = "1.3.0-beta03"
 material3Version = "1.0.0-alpha15"
 navigationCompose = "2.7.7"
+places = "3.5.0"
 roomRuntime = "2.6.1"
 runtimeLivedata = "1.6.8"
 uiTextGoogleFonts = "1.6.8"
 [libraries]
+accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
 androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }
 androidx-compose-bom-v20240500 = { module = "androidx.compose:compose-bom", version.ref = "composeBomVersion" }
@@ -50,6 +53,7 @@ calendar = { module = "com.maxkeppeler.sheets-compose-dialogs:calendar", version
 clock = { module = "com.maxkeppeler.sheets-compose-dialogs:clock", version.ref = "clock" }
 core = { module = "com.maxkeppeler.sheets-compose-dialogs:core", version.ref = "core" }
 junit = { module = "junit:junit", version.ref = "junit" }
+places = { module = "com.google.android.libraries.places:places", version.ref = "places" }
 
 [plugins]
 # ...
