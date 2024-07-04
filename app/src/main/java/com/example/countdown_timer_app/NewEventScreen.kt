@@ -37,53 +37,48 @@ import java.time.format.DateTimeFormatter
 import androidx.room.Room
 import kotlinx.coroutines.launch
 import com.example.countdown_timer_app.ui.theme.CountdowntimerappTheme
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.AutocompletePrediction
+import com.google.android.libraries.places.api.model.AutocompleteSessionToken
 import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
+import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import java.util.*
 
 class NewEventScreen : ComponentActivity() {
-    // Declare a variable for accessing the EventDao
     private lateinit var eventDao: EventDao
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // Makes the app content extend into window insets areas like status and navigation bars
         enableEdgeToEdge()
 
-        // Initialize the database and get the DAO
         val db = Room.databaseBuilder(
             applicationContext,
-            AppDatabase::class.java, // Database class
-            "event-database" // Name of the database
+            AppDatabase::class.java, "event-database"
         ).build()
 
-        // Assign the DAO to the eventDao variable
         eventDao = db.eventDao()
 
         setContent {
-            // Apply the app theme
             CountdowntimerappTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier
-                        .fillMaxSize() // Fills the maximum size of the parent
-                        // Adds padding equivalent to the height of the status bar
+                        .fillMaxSize()
                         .statusBarsPadding(),
-                    color = MaterialTheme.colorScheme.background // Set the background color
+                    color = MaterialTheme.colorScheme.background
                 ) {
                     val context = LocalContext.current
                     NewEventScreenLayout(
-                        onBack = { finish() }, // Navigate back to the previous screen
+                        onBack = { finish() },
                         onStart = {
-                            // Navigate back to home screen using context
                             val intent = Intent(context, MainActivity::class.java)
                             context.startActivity(intent)
-                            finish() // Ensure the current activity is finished
+                            finish()
                         },
-                        eventDao = eventDao // Pass the event DAO to the layout
+                        eventDao = eventDao
                     )
                 }
             }
@@ -91,160 +86,116 @@ class NewEventScreen : ComponentActivity() {
     }
 }
 
-// A composable function that defines an AppBar with a back button.
 @Composable
 fun NewEventScreenAppBar(onBack: () -> Unit) {
     Row(
-        // A Row composable to arrange its children horizontally.
         modifier = Modifier
-            .fillMaxWidth() // Makes the Row fill the maximum width of its parent.
-            // Sets the background color to the primary color from the theme.
+            .fillMaxWidth()
             .background(MaterialTheme.colorScheme.primary)
-            .padding(horizontal = 16.dp, vertical = 8.dp), // Adds horizontal and vertical padding.
-        verticalAlignment = Alignment.CenterVertically, // Aligns children vertically in the center.
-        // Arranges children with space between them.
+            .padding(horizontal = 16.dp, vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        // Back Icon Button
         IconButton(
-            onClick = onBack, // Sets the onClick action to the onBack function.
-            modifier = Modifier.size(24.dp) // Sets the size of the IconButton to 24 dp.
+            onClick = onBack,
+            modifier = Modifier.size(24.dp)
         ) {
             Icon(
-                // Sets the icon to an auto-mirrored back arrow.
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "Back", // Provides a content description for accessibility.
-                // Sets the icon color to onPrimary from the theme.
+                contentDescription = "Back",
                 tint = MaterialTheme.colorScheme.onPrimary
             )
         }
     }
 }
 
-// A composable function to create a text field with various options.
 @Composable
 fun EditTextField(
-    label: String, // The label for the text field
-    value: String, // The current text value of the text field
-    onValueChanged: (String) -> Unit, // A lambda function to handle changes to the text value
-    modifier: Modifier = Modifier, // Modifier for styling the text field
-    // Keyboard options to specify keyboard behavior and input type
+    label: String,
+    value: String,
+    onValueChanged: (String) -> Unit,
+    modifier: Modifier = Modifier,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    singleLine: Boolean = true, // Whether the text field is single line or multi-line
-    // Visual transformation to apply to the text (e.g., password masking)
+    singleLine: Boolean = true,
     visualTransformation: VisualTransformation = VisualTransformation.None
 ) {
     TextField(
-        value = value, // The current text value of the text field
-        onValueChange = onValueChanged, // A lambda function to handle changes to the text value
-        label = { Text(label) }, // The label to display when the text field is empty
-        singleLine = singleLine, // Whether the text field is single line or multi-line
-        keyboardOptions = keyboardOptions, // To specify keyboard behavior and input type
-        visualTransformation = visualTransformation, // Visual transformation to apply to the text
-        // Modifier to style the text field, making it fill the maximum width of its parent
+        value = value,
+        onValueChange = onValueChanged,
+        label = { Text(label) },
+        singleLine = singleLine,
+        keyboardOptions = keyboardOptions,
+        visualTransformation = visualTransformation,
         modifier = modifier.fillMaxWidth(),
     )
 }
 
-// A composable function to create a date and time picker.
 @Composable
 fun DateAndTimeInput(
-    onDateChanged: (String) -> Unit, // Lambda function to handle changes to the date
-    onTimeChanged: (String) -> Unit // Lambda function to handle changes to the time
+    onDateChanged: (String) -> Unit,
+    onTimeChanged: (String) -> Unit
 ) {
-    val context = LocalContext.current // Get the current context
-    // State variables for the text displayed on the date and time buttons
+    val context = LocalContext.current
     var dateButtonText by remember { mutableStateOf("Set Date") }
     var timeButtonText by remember { mutableStateOf("Set Time") }
 
-    // Create a date picker dialog
     val datePickerDialog = android.app.DatePickerDialog(
         context,
         { _, year, month, dayOfMonth ->
-            // Format the selected date and update the button text and state
             val date = "${String.format("%02d", month + 1)}/${String.format("%02d", dayOfMonth)}/$year"
             onDateChanged(date)
             dateButtonText = date
         },
-        2024, 6, 22 // Set the default date to June 22, 2024
+        2024, 6, 22
     ).apply {
-        datePicker.minDate = Calendar.getInstance().timeInMillis // Set minimum date to current date
+        datePicker.minDate = Calendar.getInstance().timeInMillis
     }
 
-    // Create a time picker dialog
     val timePickerDialog = TimePickerDialog(
         context,
         { _, hourOfDay, minute ->
-            // Format the selected time and update the button text and state
             val time = String.format("%02d:%02d", hourOfDay, minute)
             onTimeChanged(time)
             timeButtonText = time
         },
-        // Set the default time to 12:00 PM and use 24-hour format
         12, 0, false
     )
 
-    // Create a column to hold the date and time buttons
     Column(modifier = Modifier.fillMaxWidth()) {
-        // Create a row to arrange the date and time buttons horizontally
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Date picker button
             Button(
-                onClick = {
-                    datePickerDialog.show() // Show the date picker dialog when button is clicked
-                },
-                modifier = Modifier.weight(1f) // Make the button take up equal space
+                onClick = { datePickerDialog.show() },
+                modifier = Modifier.weight(1f)
             ) {
-                Text(dateButtonText) // Display the current date text on the button
+                Text(dateButtonText)
             }
 
-            Spacer(modifier = Modifier.width(16.dp)) // Add space between the date and time buttons
+            Spacer(modifier = Modifier.width(16.dp))
 
-            // Time picker section
             Row(modifier = Modifier.weight(1f)) {
                 Button(
-                    onClick = {
-                        timePickerDialog.show() // Show time picker dialog when button is clicked
-                    },
-                    modifier = Modifier.weight(1f) // Make the button take up equal space
+                    onClick = { timePickerDialog.show() },
+                    modifier = Modifier.weight(1f)
                 ) {
-                    Text(timeButtonText) // Display the current time text on the button
+                    Text(timeButtonText)
                 }
             }
         }
     }
 }
 
-// A composable function to create input fields for event details.
 @Composable
 fun EventDetailsInput(
     eventName: String,
     onEventNameChange: (String) -> Unit,
-    eventLocation: String,
     onEventLocationChange: (String) -> Unit,
     eventNotes: String,
     onEventNotesChange: (String) -> Unit
 ) {
-
-    val context = LocalContext.current
-    val autocompleteIntent = Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, listOf(
-        Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS))
-        .build(context)
-
-    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val place = Autocomplete.getPlaceFromIntent(result.data!!)
-            onEventLocationChange(place.address ?: "")
-        } else if (result.resultCode == Activity.RESULT_CANCELED) {
-            val status = Autocomplete.getStatusFromIntent(result.data!!)
-            handleAutocompleteError(context, status)
-        }
-    }
-
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -258,7 +209,6 @@ fun EventDetailsInput(
                 .align(alignment = Alignment.Start)
         )
 
-        // Event Name
         EditTextField(
             label = stringResource(R.string.event_name),
             value = eventName,
@@ -271,25 +221,13 @@ fun EventDetailsInput(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Event Location
-        Button(onClick = { launcher.launch(autocompleteIntent) }) {
-            Text("Select Location")
-        }
-
-        EditTextField(
+        LocationAutoCompleteField(
             label = stringResource(R.string.event_location),
-            value = eventLocation,
-            onValueChanged = onEventLocationChange,
-            keyboardOptions = KeyboardOptions.Default.copy(
-                keyboardType = KeyboardType.Text,
-                imeAction = ImeAction.Next
-            ),
-            modifier = Modifier.fillMaxWidth()
+            onLocationSelected = onEventLocationChange
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Event Notes (Optional)
         EditTextField(
             label = stringResource(R.string.optional_event_note),
             value = eventNotes,
@@ -304,13 +242,78 @@ fun EventDetailsInput(
     }
 }
 
+@Composable
+fun LocationAutoCompleteField(
+    label: String,
+    onLocationSelected: (String) -> Unit
+) {
+    var query by remember { mutableStateOf("") }
+    var suggestions by remember { mutableStateOf(listOf<AutocompletePrediction>()) }
+    val context = LocalContext.current
+    val placesClient: PlacesClient = remember { Places.createClient(context) }
+    val token = AutocompleteSessionToken.newInstance()
+
+    Column(modifier = Modifier.fillMaxWidth()) {
+        OutlinedTextField(
+            value = query,
+            onValueChange = {
+                query = it
+                fetchSuggestions(context, placesClient, token, it) { predictions ->
+                    suggestions = predictions
+                }
+            },
+            label = { Text(label) },
+            modifier = Modifier.fillMaxWidth()
+        )
+
+        if (suggestions.isNotEmpty()) {
+            DropdownMenu(
+                expanded = suggestions.isNotEmpty(),
+                onDismissRequest = { suggestions = emptyList() },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                suggestions.forEach { suggestion ->
+                    DropdownMenuItem(
+                        text = { Text(suggestion.getFullText(null).toString()) },
+                        onClick = {
+                            query = suggestion.getFullText(null).toString()
+                            onLocationSelected(query)
+                            suggestions = emptyList()
+                        }
+                    )
+                }
+            }
+        }
+    }
+}
+
+fun fetchSuggestions(
+    context: Context,
+    placesClient: PlacesClient,
+    token: AutocompleteSessionToken,
+    query: String,
+    callback: (List<AutocompletePrediction>) -> Unit
+) {
+    val request = FindAutocompletePredictionsRequest.builder()
+        .setSessionToken(token)
+        .setQuery(query)
+        .build()
+
+    placesClient.findAutocompletePredictions(request)
+        .addOnSuccessListener { response ->
+            callback(response.autocompletePredictions)
+        }
+        .addOnFailureListener { exception ->
+            Toast.makeText(context, exception.message, Toast.LENGTH_SHORT).show()
+        }
+}
+
 fun handleAutocompleteError(context: Context, status: Status) {
     val errorMessage = status.statusMessage ?: "Unknown error"
     Log.e("AutocompleteError", errorMessage)
     Toast.makeText(context, "Error: $errorMessage", Toast.LENGTH_LONG).show()
 }
 
-// A composable function to create the layout for the New Event screen.
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NewEventScreenLayout(
@@ -318,14 +321,13 @@ fun NewEventScreenLayout(
     onStart: () -> Unit,
     eventDao: EventDao
 ) {
-    val scope = rememberCoroutineScope() // Create a coroutine scope for launching coroutines
-    var eventName by remember { mutableStateOf("") } // State for event name
-    var eventLocation by remember { mutableStateOf("") } // State for event location
-    var eventDate by remember { mutableStateOf("") } // State for event date
-    var eventTime by remember { mutableStateOf("") } // State for event time
-    var eventNote by remember { mutableStateOf("") } // State for event notes
+    val scope = rememberCoroutineScope()
+    var eventName by remember { mutableStateOf("") }
+    var eventLocation by remember { mutableStateOf("") }
+    var eventDate by remember { mutableStateOf("") }
+    var eventTime by remember { mutableStateOf("") }
+    var eventNote by remember { mutableStateOf("") }
 
-    // State variables for form validation
     val isFormValid by remember {
         derivedStateOf {
             eventName.isNotBlank() && eventDate.isNotBlank() && eventTime.isNotBlank()
@@ -343,11 +345,9 @@ fun NewEventScreenLayout(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // Other input fields for event details
         EventDetailsInput(
             eventName = eventName,
             onEventNameChange = { eventName = it },
-            eventLocation = eventLocation,
             onEventLocationChange = { eventLocation = it },
             eventNotes = eventNote,
             onEventNotesChange = { eventNote = it }
@@ -357,7 +357,6 @@ fun NewEventScreenLayout(
             onTimeChanged = { eventTime = it }
         )
         Spacer(modifier = Modifier.height(16.dp))
-        // Done Button
         Button(
             onClick = {
                 if (isFormValid) {
@@ -380,9 +379,8 @@ fun NewEventScreenLayout(
                                     eventTime = formattedTime.toString()
                                 )
                             )
-                            onStart() // Navigate back to home screen
+                            onStart()
                         } catch (e: Exception) {
-                            // Handle the exception, show a message to the user
                             e.printStackTrace()
                         }
                     }
@@ -422,7 +420,6 @@ fun NewEventScreenPreview() {
         NewEventScreenLayout(
             onBack = { /* TODO: Implement back functionality */ },
             onStart = {
-                // Simulate navigation to home screen in preview
                 val intent = Intent(context, MainActivity::class.java)
                 context.startActivity(intent)
             },
