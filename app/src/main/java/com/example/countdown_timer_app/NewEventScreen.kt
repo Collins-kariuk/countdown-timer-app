@@ -30,6 +30,9 @@ import java.time.format.DateTimeFormatter
 import androidx.room.Room
 import kotlinx.coroutines.launch
 import com.example.countdown_timer_app.ui.theme.CountdowntimerappTheme
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.widget.Autocomplete
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import java.util.*
 
 class NewEventScreen : ComponentActivity() {
@@ -219,6 +222,12 @@ fun EventDetailsInput(
     eventNotes: String,
     onEventNotesChange: (String) -> Unit
 ) {
+
+    val context = LocalContext.current
+    val autocompleteIntent = Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, listOf(
+        Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS))
+        .build(context)
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
