@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -52,9 +51,9 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModelProvider
 import androidx.room.Room
 import com.example.countdown_timer_app.ui.theme.CountdowntimerappTheme
-import com.google.android.gms.common.api.Status
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.AutocompletePrediction
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken
@@ -68,23 +67,19 @@ import java.util.Calendar
 
 class NewEventScreen : ComponentActivity() {
     private lateinit var eventDao: EventDao
+    private lateinit var viewModel: EventViewModel
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        // Initialize the Places SDK
-        if (!Places.isInitialized()) {
-            Places.initialize(applicationContext, "AIzaSyBW8G_bVq8Z3bygy0dW_BmHKHFK49t4Bu4")
-        }
-
         val db = Room.databaseBuilder(
             applicationContext,
             AppDatabase::class.java, "event-database"
         ).build()
-
         eventDao = db.eventDao()
+        viewModel = ViewModelProvider(this, EventViewModelFactory(eventDao))[EventViewModel::class.java]
 
         setContent {
             CountdowntimerappTheme {
@@ -96,6 +91,7 @@ class NewEventScreen : ComponentActivity() {
                 ) {
                     val context = LocalContext.current
                     NewEventScreenLayout(
+                        viewModel = viewModel,
                         onBack = { finish() },
                         onStart = {
                             val intent = Intent(context, MainActivity::class.java)
@@ -335,6 +331,7 @@ fun fetchSuggestions(
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NewEventScreenLayout(
+    viewModel: EventViewModel,
     onBack: () -> Unit,
     onStart: () -> Unit,
     eventDao: EventDao
@@ -436,6 +433,7 @@ fun NewEventScreenPreview() {
     val context = LocalContext.current
     CountdowntimerappTheme {
         NewEventScreenLayout(
+            viewModel = viewModel,
             onBack = { /* TODO: Implement back functionality */ },
             onStart = {
                 val intent = Intent(context, MainActivity::class.java)

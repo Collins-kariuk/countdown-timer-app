@@ -11,7 +11,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -27,38 +26,35 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
 import com.example.countdown_timer_app.ui.theme.CountdowntimerappTheme
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
-import java.time.LocalDate
-import java.time.LocalDateTime
-import java.time.LocalTime
 
 class MainActivity : ComponentActivity() {
     private lateinit var eventDao: EventDao
+    private lateinit var viewModel: EventViewModel
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        // Initialize the database and get the DAO
         val db = Room.databaseBuilder(
             applicationContext,
             AppDatabase::class.java, "event-database"
         ).build()
         eventDao = db.eventDao()
+        viewModel = ViewModelProvider(
+            this,
+            EventViewModelFactory(eventDao)
+        )[EventViewModel::class.java]
 
         setContent {
             CountdowntimerappTheme {
-                var searchQuery by remember { mutableStateOf("") }
-                var isSearching by remember { mutableStateOf(false) }
                 val navController = rememberNavController()
-
                 Surface(
                     modifier = Modifier
                         .fillMaxSize()
@@ -68,16 +64,17 @@ class MainActivity : ComponentActivity() {
                     NavHost(navController = navController, startDestination = "home") {
                         composable("home") {
                             HomeScreenLayout(
+                                viewModel = viewModel,
                                 searchQuery = searchQuery,
                                 onSearchQueryChange = { searchQuery = it },
                                 isSearching = isSearching,
                                 onSearchToggle = { isSearching = !isSearching },
-                                onAddEventClicked = { navController.navigate("new_event") },
-                                eventDao = eventDao
+                                onAddEventClicked = { navController.navigate("new_event") }
                             )
                         }
                         composable("new_event") {
                             NewEventScreenLayout(
+                                viewModel = viewModel,
                                 onBack = { navController.popBackStack() },
                                 onStart = { navController.navigate("home") },
                                 eventDao = eventDao
@@ -179,44 +176,16 @@ fun NewEventButton(onAddEventClicked: () -> Unit) {
     }
 }
 
-/**
- * Composable function that defines the layout for the Home Screen.
- *
- * This function sets up the Home Screen layout which includes an AppBar for searching, a button for
- * adding a new event, and a grid to display the list of events.
- * The events are fetched from the provided EventDao and are displayed in a LazyVerticalGrid, sorted
- * by the most recent event at the top.
- *
- * @param searchQuery The current search query text.
- * @param onSearchQueryChange Callback to update the search query text.
- * @param isSearching Flag to determine if the user is in search mode.
- * @param onSearchToggle Callback to toggle the search mode.
- * @param onAddEventClicked Callback to handle the addition of a new event.
- * @param eventDao Data Access Object for accessing event data from the database.
- */
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeScreenLayout(
+    viewModel: EventViewModel,
     searchQuery: String,
     onSearchQueryChange: (String) -> Unit,
     isSearching: Boolean,
     onSearchToggle: () -> Unit,
-    onAddEventClicked: () -> Unit,
-    eventDao: EventDao
+    onAddEventClicked: () -> Unit
 ) {
-    var events by remember { mutableStateOf(listOf<Event>()) }
-    val scope = rememberCoroutineScope()
-
-    LaunchedEffect(Unit) {
-        scope.launch {
-            events = eventDao.getAllEvents().sortedByDescending {
-                LocalDateTime.of(
-                    LocalDate.parse(it.eventDate),
-                    LocalTime.parse(it.eventTime)
-                )
-            }
-        }
-    }
+    val events by viewModel.events.collectAsState()
 
     val filteredEvents = if (searchQuery.isNotBlank()) {
         events.filter { it.eventName.contains(searchQuery, ignoreCase = true) }
@@ -258,9 +227,7 @@ fun HomeScreenLayout(
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     items(filteredEvents) { event ->
-                        EventCard(event, eventDao, scope) {
-                            events = events.filter { it != event }
-                        }
+                        EventCard(event, viewModel)
                     }
                 }
             }
@@ -268,25 +235,8 @@ fun HomeScreenLayout(
     }
 }
 
-/**
- * Composable function to display an event card.
- *
- * This function creates a card-like UI component to display details of an event.
- * It includes the event name, event date and time, and optionally, event notes.
- * The card has a fixed size, rounded corners, a border, and a background color.
- *
- * @param event The event to display, containing event name, date, time, and optionally notes.
- * @param eventDao The Data Access Object for the event to handle deletion.
- * @param scope The CoroutineScope to launch deletion in.
- * @param onDelete Callback to refresh the event list after deletion.
- */
 @Composable
-fun EventCard(
-    event: Event,
-    eventDao: EventDao,
-    scope: CoroutineScope,
-    onDelete: () -> Unit
-) {
+fun EventCard(event: Event, viewModel: EventViewModel) {
     Box(
         modifier = Modifier.size(150.dp)
     ) {
@@ -312,10 +262,7 @@ fun EventCard(
         }
         IconButton(
             onClick = {
-                scope.launch {
-                    eventDao.deleteEvent(event)
-                    onDelete()
-                }
+                viewModel.deleteEvent(event)
             },
             modifier = Modifier
                 .align(Alignment.TopEnd)
