@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 
 /**
  * Data Access Object (DAO) for managing event data in the database.
@@ -36,5 +37,7 @@ interface EventDao {
      */
     @Delete
     suspend fun deleteEvent(event: Event)
-    abstract fun updateEvent(updatedEvent: Event)
+
+    @Update
+    suspend fun updateEvent(event: Event)
 }
