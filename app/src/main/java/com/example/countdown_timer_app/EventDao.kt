@@ -38,6 +38,11 @@ interface EventDao {
     @Delete
     suspend fun deleteEvent(event: Event)
 
+    /**
+     * Updates an existing event in the database.
+     *
+     * @param event The event to be updated.
+     */
     @Update
     suspend fun updateEvent(event: Event)
 }
