@@ -11,6 +11,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -231,7 +232,7 @@ fun HomeScreenLayout(
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     items(filteredEvents) { event ->
-                        EventCard(event, viewModel)
+                        EventCard(event = event, viewModel = viewModel)
                     }
                 }
             }
@@ -239,6 +240,7 @@ fun HomeScreenLayout(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun EventCard(event: Event, viewModel: EventViewModel) {
     Box(
