@@ -1,46 +1,38 @@
 [versions]
-# ...
 accompanistPermissions = "0.19.0"
 activityCompose = "1.9.0"
 calendar = "1.3.0"
 clock = "1.3.0"
 composeBom = "2024.06.00"
-composeBomVersion = "2024.06.00"
 composeMaterial = "1.3.1"
 core = "1.3.0"
 coreKtx = "1.13.1"
 espressoCore = "3.6.1"
 junit = "4.13.2"
-junitVersion = "1.2.1"
 kotlin = "2.0.0"
 lifecycleRuntimeKtx = "2.8.3"
-lifecycleRuntimeKtxVersion = "2.8.3"
 lifecycleViewmodelCompose = "2.8.3"
 material = "1.6.8"
 material3 = "1.2.1"
 material3AdaptiveNavigationSuite = "1.3.0-beta04"
-material3Version = "1.2.1"
 navigationCompose = "2.7.7"
 places = "3.5.0"
 roomRuntime = "2.6.1"
 runtimeLivedata = "1.6.8"
 uiTextGoogleFonts = "1.6.8"
+
 [libraries]
 accompanist-permissions = { module = "com.google.accompanist:accompanist-permissions", version.ref = "accompanistPermissions" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "activityCompose" }
 androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "composeBom" }
-androidx-compose-bom-v20240500 = { module = "androidx.compose:compose-bom", version.ref = "composeBomVersion" }
 androidx-compose-material = { module = "androidx.wear.compose:compose-material", version.ref = "composeMaterial" }
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "coreKtx" }
 androidx-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "espressoCore" }
-androidx-junit = { module = "androidx.test.ext:junit", version.ref = "junitVersion" }
+androidx-junit = { module = "androidx.test.ext:junit", version.ref = "junit" }
 androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
-androidx-lifecycle-runtime-ktx-v251 = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtxVersion" }
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
-androidx-material = { module = "androidx.compose.material:material", version.ref = "material" }
 androidx-material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
 androidx-material3-adaptive-navigation-suite = { module = "androidx.compose.material3:material3-adaptive-navigation-suite", version.ref = "material3AdaptiveNavigationSuite" }
-androidx-material3-v100alpha15 = { module = "androidx.compose.material3:material3", version.ref = "material3Version" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomRuntime" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "roomRuntime" }
@@ -50,7 +42,7 @@ androidx-ui = { module = "androidx.compose.ui:ui" }
 androidx-ui-graphics = { module = "androidx.compose.ui:ui-graphics" }
 androidx-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4" }
 androidx-ui-test-manifest = { module = "androidx.compose.ui:ui-test-manifest" }
-androidx-ui-text-google-fonts = { group = "androidx.compose.ui", name = "ui-text-google-fonts", version.ref = "uiTextGoogleFonts" }
+androidx-ui-text-google-fonts = { module = "androidx.compose.ui:ui-text-google-fonts", version.ref = "uiTextGoogleFonts" }
 androidx-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 androidx-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
 calendar = { module = "com.maxkeppeler.sheets-compose-dialogs:calendar", version.ref = "calendar" }
@@ -60,6 +52,5 @@ junit = { module = "junit:junit", version.ref = "junit" }
 places = { module = "com.google.android.libraries.places:places", version.ref = "places" }
 
 [plugins]
-# ...
 org-jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }

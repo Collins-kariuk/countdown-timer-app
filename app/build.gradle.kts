@@ -63,34 +63,24 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
-    implementation(libs.androidx.compose.material)
+    implementation(libs.androidx.runtime.livedata)
     implementation(libs.androidx.ui.text.google.fonts)
     ksp(libs.androidx.room.compiler)
-    implementation(libs.androidx.runtime.livedata)
 
     implementation(libs.core) // Core
     implementation(libs.calendar) // Calendar
     implementation(libs.clock) // Clock
-
-    implementation(libs.androidx.material3)
-    implementation("androidx.compose.material3:material3-window-size-class:1.2.1")
-    implementation(libs.androidx.material3.adaptive.navigation.suite)
-
-    implementation(libs.androidx.material3.v100alpha15)
-    implementation(libs.androidx.material)
-    implementation("androidx.compose.material3:material3-window-size-class:1.0.0-alpha15")
 
     implementation(libs.places)
     implementation(libs.accompanist.permissions)
 
     // ViewModel and LiveData
     implementation(libs.androidx.lifecycle.viewmodel.compose)
-    implementation(libs.androidx.lifecycle.runtime.ktx.v251)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom.v20240500))
+    androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
