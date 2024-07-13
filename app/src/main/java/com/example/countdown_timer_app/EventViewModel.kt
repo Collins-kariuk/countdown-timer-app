@@ -1,35 +1,26 @@
 package com.example.countdown_timer_app
 
 import android.os.Build
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 
-/**
- * ViewModel for managing and interacting with event data.
- *
- * @param eventDao The DAO for accessing event data from the database.
- */
 @RequiresApi(Build.VERSION_CODES.O)
 class EventViewModel(private val eventDao: EventDao) : ViewModel() {
 
-    /** A list of events that updates the UI when modified. */
-    val events: SnapshotStateList<Event> = mutableStateListOf()
+    private val _events = MutableStateFlow<List<Event>>(emptyList())
+    val events: StateFlow<List<Event>> = _events
 
-    /** Initializes the ViewModel by loading all events. */
     init {
         loadEvents()
     }
 
-    /**
-     * Loads all events from the database and sorts them by date and time in descending order.
-     */
     @RequiresApi(Build.VERSION_CODES.O)
     private fun loadEvents() {
         viewModelScope.launch {
@@ -39,46 +30,28 @@ class EventViewModel(private val eventDao: EventDao) : ViewModel() {
                     LocalTime.parse(it.eventTime)
                 )
             }
-            events.addAll(allEvents)
+            _events.value = allEvents
         }
     }
 
-    /**
-     * Adds a new event to the database and updates the list of events.
-     *
-     * @param event The event to be added.
-     */
     fun addEvent(event: Event) {
         viewModelScope.launch {
             eventDao.insertEvent(event)
-            events.add(event)
+            _events.value += event
         }
     }
 
-    /**
-     * Deletes an existing event from the database and updates the list of events.
-     *
-     * @param event The event to be deleted.
-     */
     fun deleteEvent(event: Event) {
         viewModelScope.launch {
             eventDao.deleteEvent(event)
-            events.remove(event)
+            _events.value -= event
         }
     }
 
-    /**
-     * Updates an existing event in the database and the list of events.
-     *
-     * @param updatedEvent The event with updated information.
-     */
     fun updateEvent(updatedEvent: Event) {
         viewModelScope.launch {
             eventDao.updateEvent(updatedEvent)
-            val index = events.indexOfFirst { it.id == updatedEvent.id }
-            if (index != -1) {
-                events[index] = updatedEvent
-            }
+            _events.value = _events.value.map { if (it.id == updatedEvent.id) updatedEvent else it }
         }
     }
 }
