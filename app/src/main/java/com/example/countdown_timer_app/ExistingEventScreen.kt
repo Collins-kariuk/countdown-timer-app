@@ -1,9 +1,11 @@
 package com.example.countdown_timer_app
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -189,11 +191,18 @@ fun EventDetailScreen(eventTitle: String, eventDate: String, eventNote: String?)
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun EventScreenLayout(onShareClicked: () -> Unit,
-                      onEditClicked: () -> Unit,
-                      onStartClicked: () -> Unit) {
-    // Scaffold composable provides a layout structure with a top bar and a content area
+fun EventScreenLayout(
+    viewModel: EventViewModel,
+    eventId: Int, // Assuming events have unique IDs
+    onShareClicked: () -> Unit,
+    onEditClicked: () -> Unit,
+    onStartClicked: () -> Unit
+) {
+    val events by viewModel.events.collectAsState()
+    val event = events.firstOrNull { it.id == eventId }
+
     Scaffold(
         topBar = {
             EventScreenAppBar(
@@ -203,7 +212,6 @@ fun EventScreenLayout(onShareClicked: () -> Unit,
             )
         }
     ) { innerPadding ->
-        // Surface composable provides a background for the app's content area
         Surface(
             modifier = Modifier
                 .fillMaxSize()
@@ -211,14 +219,17 @@ fun EventScreenLayout(onShareClicked: () -> Unit,
                 .background(MaterialTheme.colorScheme.tertiaryContainer),
             color = MaterialTheme.colorScheme.background
         ) {
-            EventDetailScreen(
-                eventTitle = "Meeting with Team",
-                eventDate = "2024-05-15 14:00",
-                eventNote = "Discuss quarterly goals."
-            )
+            event?.let {
+                EventDetailScreen(
+                    eventTitle = it.eventName,
+                    eventDate = "${it.eventDate} ${it.eventTime}",
+                    eventNote = it.eventNotes
+                )
+            }
         }
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable
