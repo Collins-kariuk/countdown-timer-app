@@ -55,6 +55,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             CountdowntimerappTheme {
                 val navController = rememberNavController()
+                var searchQuery by remember { mutableStateOf("") }
+                var isSearching by remember { mutableStateOf(false) }
+
                 Surface(
                     modifier = Modifier
                         .fillMaxSize()
@@ -176,6 +179,7 @@ fun NewEventButton(onAddEventClicked: () -> Unit) {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeScreenLayout(
     viewModel: EventViewModel,
@@ -291,3 +295,4 @@ fun HomeScreenPreview() {
         )
     }
 }
+
