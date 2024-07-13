@@ -8,7 +8,19 @@ import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -17,8 +29,20 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,6 +57,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.room.Room
 import com.example.countdown_timer_app.ui.theme.CountdowntimerappTheme
+import kotlinx.coroutines.runBlocking
 
 class MainActivity : ComponentActivity() {
     private lateinit var eventDao: EventDao
@@ -286,15 +311,41 @@ fun HomeScreenPreview() {
     var searchQuery by remember { mutableStateOf("") }
     var isSearching by remember { mutableStateOf(false) }
 
+    val mockEventDao = MockEventDao().apply {
+        // Add some sample events within a runBlocking block
+        runBlocking {
+            val sampleEvents = listOf(
+                Event(
+                    id = 1,
+                    eventName = "Meeting",
+                    eventDate = "2024-05-15",
+                    eventTime = "14:00",
+                    eventNotes = "Discuss quarterly goals.",
+                    eventLocation = "Office"
+                ),
+                Event(
+                    id = 2,
+                    eventName = "Birthday Party",
+                    eventDate = "2024-06-22",
+                    eventTime = "18:00",
+                    eventNotes = "At John's place.",
+                    eventLocation = "Home"
+                )
+            )
+            sampleEvents.forEach { insertEvent(it) }
+        }
+    }
+
+    val mockViewModel = EventViewModel(mockEventDao)
+
     CountdowntimerappTheme {
         HomeScreenLayout(
+            viewModel = mockViewModel,
             searchQuery = searchQuery,
             onSearchQueryChange = { searchQuery = it },
             isSearching = isSearching,
             onSearchToggle = { isSearching = !isSearching },
-            onAddEventClicked = { /* TODO: Implement add event functionality. See main class */ },
-            eventDao = MockEventDao()
+            onAddEventClicked = { /* No-op for preview */ }
         )
     }
 }
-
