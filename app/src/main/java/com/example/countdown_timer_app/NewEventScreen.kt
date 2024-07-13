@@ -64,6 +64,7 @@ import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.util.Calendar
+import kotlinx.coroutines.runBlocking
 
 class NewEventScreen : ComponentActivity() {
     private lateinit var eventDao: EventDao
@@ -423,17 +424,38 @@ class MockEventDao : EventDao {
     override suspend fun deleteEvent(event: Event) {
         events.remove(event)
     }
+
+    override suspend fun updateEvent(event: Event) {
+        val index = events.indexOfFirst { it.id == event.id }
+        if (index != -1) {
+            events[index] = event
+        }
+    }
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 fun NewEventScreenPreview() {
-    val mockEventDao = MockEventDao()
+    val mockEventDao = MockEventDao().apply {
+        // Add some sample events for testing
+        val sampleEvents = listOf(
+            Event(
+                id = 1,
+                eventName = "Sample Event",
+                eventDate = "2024-05-15",
+                eventTime = "14:00",
+                eventNotes = "This is a sample event note.",
+                eventLocation = "Sample Location"
+            )
+        )
+        runBlocking { sampleEvents.forEach { insertEvent(it) } }
+    }
+    val mockViewModel = EventViewModel(mockEventDao)
     val context = LocalContext.current
     CountdowntimerappTheme {
         NewEventScreenLayout(
-            viewModel = viewModel,
+            viewModel = mockViewModel,
             onBack = { /* TODO: Implement back functionality */ },
             onStart = {
                 val intent = Intent(context, MainActivity::class.java)
