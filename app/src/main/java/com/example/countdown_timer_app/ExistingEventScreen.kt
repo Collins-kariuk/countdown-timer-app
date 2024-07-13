@@ -32,31 +32,51 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.runtime.*
 import androidx.compose.ui.text.font.FontWeight
+import androidx.lifecycle.ViewModelProvider
+import androidx.room.Room
 import kotlinx.coroutines.delay
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlinx.coroutines.runBlocking
 import com.example.countdown_timer_app.ui.theme.CountdowntimerappTheme
 
 class ExistingEventScreen : ComponentActivity() {
+    private lateinit var viewModel: EventViewModel
+
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // Makes the app content extend into window insets areas like status and navigation bars.
         enableEdgeToEdge()
+
+        // Initialize the database and get the DAO
+        val db = Room.databaseBuilder(
+            applicationContext,
+            AppDatabase::class.java, "event-database"
+        ).build()
+        val eventDao = db.eventDao()
+        viewModel = ViewModelProvider(
+            this,
+            EventViewModelFactory(eventDao)
+        )[EventViewModel::class.java]
+
+        // Assuming you have the eventId from the intent or some other source
+        val eventId = intent.getIntExtra("EVENT_ID", -1)
+
         setContent {
             CountdowntimerappTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier
-                        .fillMaxSize() // Fills the maximum size of the parent.
-                        // Adds padding equivalent to the height of the status bar.,
+                        .fillMaxSize()
                         .statusBarsPadding(),
                     color = MaterialTheme.colorScheme.background
                 ) {
                     EventScreenLayout(
-                        onShareClicked = {},
-                        onEditClicked = {},
-                        onStartClicked = {}
+                        viewModel = viewModel,
+                        eventId = eventId,
+                        onShareClicked = { /* Implement share functionality */ },
+                        onEditClicked = { /* Implement edit functionality */ },
+                        onStartClicked = { finish() } // Navigate back to previous screen
                     )
                 }
             }
@@ -230,15 +250,30 @@ fun EventScreenLayout(
     }
 }
 
-
+@RequiresApi(Build.VERSION_CODES.O)
 @Preview(showBackground = true)
 @Composable
 fun EventScreenPreview() {
+    val mockEventDao = MockEventDao().apply {
+        val sampleEvent = Event(
+            id = 1,
+            eventName = "Sample Event",
+            eventDate = "2024-05-15",
+            eventTime = "14:00",
+            eventNotes = "Sample event notes.",
+            eventLocation = "Sample Location"
+        )
+        runBlocking { insertEvent(sampleEvent) }
+    }
+    val mockViewModel = EventViewModel(mockEventDao)
+
     CountdowntimerappTheme {
         EventScreenLayout(
-            onShareClicked = {},
-            onEditClicked = {},
-            onStartClicked = {}
+            viewModel = mockViewModel,
+            eventId = 1,
+            onShareClicked = { /* No-op for preview */ },
+            onEditClicked = { /* No-op for preview */ },
+            onStartClicked = { /* No-op for preview */ }
         )
     }
 }
