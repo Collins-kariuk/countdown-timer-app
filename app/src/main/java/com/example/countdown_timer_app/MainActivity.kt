@@ -215,9 +215,6 @@ fun NewEventButton(onAddEventClicked: () -> Unit) {
  * @param isSearching A boolean flag indicating whether the user is currently searching.
  * @param onSearchToggle A lambda function to handle toggling the search mode.
  * @param onAddEventClicked A lambda function to handle the "Add Event" button click.
- *
- * @RequiresApi(Build.VERSION_CODES.O) Ensures that the function is only called on devices
- * with Android O (API level 26) or higher.
  */
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -279,6 +276,15 @@ fun HomeScreenLayout(
     }
 }
 
+/**
+ * Composable function that displays an individual event card, including the event's name,
+ * date, time, and optional notes. The card also provides a delete button for removing the event.
+ *
+ * @param event The event data object containing the event's details such as name, date, time, and
+ * notes.
+ * @param viewModel The ViewModel that manages the event data, allowing for operations such as
+ * deletion.
+ */
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun EventCard(event: Event, viewModel: EventViewModel) {
