@@ -136,6 +136,17 @@ fun NewEventScreenAppBar(onBack: () -> Unit) {
     }
 }
 
+/**
+ * Composable function for a customizable text field used for input.
+ *
+ * @param label The label to display inside the text field.
+ * @param value The current value of the text field.
+ * @param onValueChanged Callback that is triggered when the text field value changes.
+ * @param modifier Modifier to be applied to the text field.
+ * @param keyboardOptions Configures the software keyboard for text input.
+ * @param singleLine Boolean to indicate if the text field should be single-lined.
+ * @param visualTransformation Visual transformation for the text in the field.
+ */
 @Composable
 fun EditTextField(
     label: String,
