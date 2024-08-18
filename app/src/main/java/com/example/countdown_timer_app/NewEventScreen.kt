@@ -233,6 +233,16 @@ fun DateAndTimeInput(
     }
 }
 
+/**
+ * Composable function that provides input fields for entering event details.
+ * Includes fields for the event name, location, and notes.
+ *
+ * @param eventName The current value of the event name input field.
+ * @param onEventNameChange Callback to handle changes to the event name input.
+ * @param onEventLocationChange Callback to handle changes to the event location input.
+ * @param eventNotes The current value of the event notes input field.
+ * @param onEventNotesChange Callback to handle changes to the event notes input.
+ */
 @Composable
 fun EventDetailsInput(
     eventName: String,
