@@ -107,6 +107,12 @@ class NewEventScreen : ComponentActivity() {
     }
 }
 
+/**
+ * Composable function that displays the app bar for the New Event screen.
+ * Includes a back button that triggers the provided callback when clicked.
+ *
+ * @param onBack A lambda function that gets called when the back button is clicked.
+ */
 @Composable
 fun NewEventScreenAppBar(onBack: () -> Unit) {
     Row(
