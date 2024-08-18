@@ -205,6 +205,20 @@ fun NewEventButton(onAddEventClicked: () -> Unit) {
     }
 }
 
+/**
+ * Composable function that displays the home screen layout of the application,
+ * including the app bar, a search feature, and a grid of events.
+ *
+ * @param viewModel The ViewModel that manages the data for the events.
+ * @param searchQuery The current search query entered by the user.
+ * @param onSearchQueryChange A lambda function to handle changes in the search query.
+ * @param isSearching A boolean flag indicating whether the user is currently searching.
+ * @param onSearchToggle A lambda function to handle toggling the search mode.
+ * @param onAddEventClicked A lambda function to handle the "Add Event" button click.
+ *
+ * @RequiresApi(Build.VERSION_CODES.O) Ensures that the function is only called on devices
+ * with Android O (API level 26) or higher.
+ */
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun HomeScreenLayout(
