@@ -168,6 +168,13 @@ fun EditTextField(
     )
 }
 
+/**
+ * Composable function that provides UI components for date and time input.
+ * Users can pick a date and time, and the selections are passed back via callbacks.
+ *
+ * @param onDateChanged Callback to handle the selected date as a string.
+ * @param onTimeChanged Callback to handle the selected time as a string.
+ */
 @Composable
 fun DateAndTimeInput(
     onDateChanged: (String) -> Unit,
