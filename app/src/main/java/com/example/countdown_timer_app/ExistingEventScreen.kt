@@ -230,6 +230,17 @@ fun EventDetailScreen(eventTitle: String, eventDate: String, eventNote: String?)
     }
 }
 
+/**
+ * Composable function that sets up the layout for the Event Screen.
+ * It fetches the event details based on the event ID and displays the event details
+ * along with the app bar containing the share, edit, and back options.
+ *
+ * @param viewModel The ViewModel managing the event data.
+ * @param eventId The unique ID of the event to be displayed.
+ * @param onShareClicked Function called when the share icon is clicked.
+ * @param onEditClicked Function called when the edit icon is clicked.
+ * @param onStartClicked Function called when the back icon is clicked.
+ */
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun EventScreenLayout(
@@ -264,7 +275,11 @@ fun EventScreenLayout(
                     eventDate = "${it.eventDate} ${it.eventTime}",
                     eventNote = it.eventNotes
                 )
-            }
+            } ?: Text(
+                text = "Event not found",
+                style = MaterialTheme.typography.displaySmall,
+                modifier = Modifier.padding(16.dp)
+            )
         }
     }
 }
