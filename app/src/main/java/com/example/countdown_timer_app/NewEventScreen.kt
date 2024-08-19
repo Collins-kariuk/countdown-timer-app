@@ -297,6 +297,14 @@ fun EventDetailsInput(
     }
 }
 
+/**
+ * Composable function for an auto-complete text field that suggests locations as the user types.
+ * Integrates with the Google Places API to fetch and display location suggestions.
+ *
+ * @param label The label to display inside the text field.
+ * @param onLocationSelected Callback that is triggered when a location is selected from the
+ * suggestions.
+ */
 @Composable
 fun LocationAutoCompleteField(
     label: String,
