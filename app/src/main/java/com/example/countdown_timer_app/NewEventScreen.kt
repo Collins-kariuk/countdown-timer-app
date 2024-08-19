@@ -380,6 +380,16 @@ fun fetchSuggestions(
         }
 }
 
+/**
+ * Composable function that sets up the layout for the New Event screen.
+ * Handles form input, validation, and saving of the new event to the database.
+ *
+ * @param viewModel The ViewModel managing the event data.
+ * @param onBack A lambda function that gets called when the back button is pressed.
+ * @param onStart A lambda function that gets called when the "Done" button is pressed after a valid
+ * form submission.
+ * @param eventDao The DAO for interacting with the Event database.
+ */
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NewEventScreenLayout(
