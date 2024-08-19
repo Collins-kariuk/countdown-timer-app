@@ -142,6 +142,13 @@ fun EventScreenAppBar(
     }
 }
 
+/**
+ * Composable function that displays the details of an event, including a countdown timer.
+ *
+ * @param eventTitle The title of the event.
+ * @param eventDate The date and time of the event as a string.
+ * @param eventNote An optional note associated with the event.
+ */
 @Composable
 fun EventDetailScreen(eventTitle: String, eventDate: String, eventNote: String?) {
     // State to hold the remaining time as a string
