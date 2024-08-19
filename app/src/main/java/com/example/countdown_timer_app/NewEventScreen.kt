@@ -471,21 +471,44 @@ fun NewEventScreenLayout(
     }
 }
 
+/**
+ * A mock implementation of EventDao for testing purposes.
+ */
 class MockEventDao : EventDao {
     private val events = mutableListOf<Event>()
 
+    /**
+     * Retrieves all events from the mock database.
+     *
+     * @return A list of all events.
+     */
     override suspend fun getAllEvents(): List<Event> {
         return events
     }
 
+    /**
+     * Inserts a new event into the mock database.
+     *
+     * @param event The event to be inserted.
+     */
     override suspend fun insertEvent(event: Event) {
         events.add(event)
     }
 
+    /**
+     * Deletes an event from the mock database.
+     *
+     * @param event The event to be deleted.
+     */
     override suspend fun deleteEvent(event: Event) {
         events.remove(event)
     }
 
+    /**
+     * Updates an existing event in the mock database.
+     *
+     * @param event The event to be updated.
+     */
     override suspend fun updateEvent(event: Event) {
         val index = events.indexOfFirst { it.id == event.id }
         if (index != -1) {
