@@ -84,8 +84,20 @@ class ExistingEventScreen : ComponentActivity() {
     }
 }
 
+/**
+ * Composable function that sets up the app bar for the Event Screen.
+ * It includes back, edit, and share buttons, and handles their click events.
+ *
+ * @param onShareClicked Function called when the share icon is clicked.
+ * @param onEditClicked Function called when the edit icon is clicked.
+ * @param onStartClicked Function called when the back icon is clicked.
+ */
 @Composable
-fun EventScreenAppBar(onShareClicked: () -> Unit, onEditClicked: () -> Unit, onStartClicked: () -> Unit) {
+fun EventScreenAppBar(
+    onShareClicked: () -> Unit,
+    onEditClicked: () -> Unit,
+    onStartClicked: () -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
