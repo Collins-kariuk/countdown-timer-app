@@ -350,6 +350,15 @@ fun LocationAutoCompleteField(
     }
 }
 
+/**
+ * Fetches location suggestions from the Google Places API based on the user's query.
+ *
+ * @param context The current context in which the function is called.
+ * @param placesClient The PlacesClient instance used to interact with the Google Places API.
+ * @param token The session token used to track autocomplete requests.
+ * @param query The search query entered by the user.
+ * @param callback A callback function that receives the list of autocomplete predictions.
+ */
 fun fetchSuggestions(
     context: Context,
     placesClient: PlacesClient,
@@ -367,8 +376,8 @@ fun fetchSuggestions(
             callback(response.autocompletePredictions)
         }
         .addOnFailureListener { exception ->
-        Toast.makeText(context, exception.message, Toast.LENGTH_SHORT).show()
-    }
+            Toast.makeText(context, exception.message, Toast.LENGTH_SHORT).show()
+        }
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
