@@ -10,7 +10,7 @@ class MyApplication : Application() {
 
         // Initialize the Places SDK
         if (!Places.isInitialized()) {
-            Places.initialize(applicationContext, "AIzaSyBW8G_bVq8Z3bygy0dW_BmHKHFK49t4Bu4")
+            Places.initialize(applicationContext, "YOUR_API_KEY")
         }
     }
 }
